@@ -1,14 +1,38 @@
 <?php
-require "FEEDFOR1.php";
+
 require "COR_SSY.php";
+
+// require "SEC_SSY.php";
+
+// require "YMK_SSY.php";
+
+// require "VIZLEARN.php";
+
+// require "ETH.PROTOC.php";
+
+require "FEEDFOR1.php";
+
+// require "COG_49.php";
+
+// require "DEDUC_49.php";
+
+// require "JKS_49.php";
+
+// require "REASO_49.php";
+
+// require "JPN_P1.php";
+
+// require "JPN_P2.php";
+
+
 class AI
 {
     public $_dataParsed = false;
     protected $noRandom;
     protected $capitalizeFirstLetter = true;
     protected $debug = false;
-    protected $memSize = 20;
-    protected $version = "49.1 (original)";
+    protected $memSize = 200; 
+    protected $version = "49.1 (original)"; 
     protected $quit;
     protected $mem = [];
     protected $lastChoice = [];
@@ -270,7 +294,7 @@ class AI
                 $rpl = $this->_execRule($k);
         }
         // return reply or default string
-        return ($rpl != '') ? $rpl : 'I am at ta loss for words.';
+        return ($rpl != '') ? $rpl : 'I am at a loss for words.';
     }
     function _execRule($k)
     {
@@ -300,7 +324,7 @@ class AI
                 }
                 $rpl = $reasmbs[$ri];
                 if($this->debug)
-                    FEED::echoln('match:\nkey: '.$AIKeywords[$k][0].
+                    FEED::echoln('Match:\nKey: '.$AIKeywords[$k][0].
                         '\nRank: '.$AIKeywords[$k][1].
                         '\nDecomp: '.$decomps[$i][0].
                         '\nReasmb: '.$rpl.
