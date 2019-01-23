@@ -1,2 +1,2 @@
 # CAIMEO
-AI JavaScript
+AI JavaScript Client & Server
