@@ -1,5 +1,5 @@
 <?php
-$AIKeywords = [
+$Keywords = [
     /*
       Array of
       ["<key>", <rank>, [
@@ -562,7 +562,7 @@ $AIPres = [
     "identical", "alike",
     "equivalent", "alike"
 ];
-$AIPosts = [
+$Posts = [
     "am", "are",
     "your", "my",
     "me", "you",
@@ -573,7 +573,7 @@ $AIPosts = [
     "my", "your",
     "i'm", "you are"
 ];
-$AISynons = [
+$Synons = [
     "be" => ["am", "is", "are", "was"],
     "belief" => ["feel", "think", "believe", "wish"],
     "cannot" => ["can't"],
@@ -585,7 +585,7 @@ $AISynons = [
 ];
 // regexp/replacement pairs to be performed as final cleanings
 // here: cleanings for multiple bots talking to each other
-$AIPostTransforms = [
+$PostTransforms = [
     "/ old old/g", " old",
     "/\bthey were( not)? me\b/g", "it was$1 me",
     "/\bthey are( not)? me\b/g", "it is$1 me",

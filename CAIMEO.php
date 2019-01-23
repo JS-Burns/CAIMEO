@@ -45,7 +45,7 @@ class AI
         $this->noRandom = ($noRandomFlag) ? true : false;
         $this->capitalizeFirstLetter = true;
         $this->debug = false;
-        $this->memSize = 20;
+        $this->memSize = 200;
         if(!$this->_dataParsed)
             $this->_init();
         $this->reset();
@@ -55,35 +55,35 @@ class AI
     }
     function reset() {
         FEED::echoln("called reset()");
-        global $AIKeywords;
+        global $Keywords;
         $this->quit = false;
         $this->mem = [];
         $this->lastChoice = [];
-        for($k=0; $k<count($AIKeywords); $k++)
+        for($k=0; $k<count($Keywords); $k++)
         {
             $this->lastChoice[$k] = [];
-            $rules = $AIKeywords[$k][2];
+            $rules = $Keywords[$k][2];
             for($i=0; $i<count($rules); $i++)
                 $this->lastChoice[$k][$i] = -1;
         }
     }
     function _init() {
         FEED::echoln("called _init()");
-        global $AISynons;
-        global $AIKeywords;
-        global $AIPres;
-        global $AIPosts;
-        global $AIQuits;
+        global $Synons;
+        global $Keywords;
+        global $Pres;
+        global $Posts;
+        global $Quits;
         // parse data and convert it from canonical form to internal use
         // prodoce synonym list
         $synPatterns = [];
-        if( $AISynons && is_array($AISynons) ) {
-            foreach($AISynons as $key => $arrayValues)
+        if( $Synons && is_array($Synons) ) {
+            foreach($Synons as $key => $arrayValues)
                 $synPatterns[$key] = '('.$key.'|'.join('|', $arrayValues).')';
         }
         // check for keywords or install empty structure to prevent any errors
-        if(!$AIKeywords) {
-            $AIKeywords = [['###',0,[['###',[]]]]];
+        if(!$Keywords) {
+            $Keywords = [['###',0,[['###',[]]]]];
         }
         // 1st convert rules to regexps
         // expand synonyms and insert asterisk expressions for backtracking
@@ -93,10 +93,10 @@ class AI
         $are2='/(\S)\s*\*\s*$/';
         $are3='/^\s*\*\s*$/';
         $wsre='/\s+/';
-        for($k=0; $k<count($AIKeywords); $k++)
+        for($k=0; $k<count($Keywords); $k++)
         {
-            $rules = $AIKeywords[$k][2];
-            $AIKeywords[$k][3] = $k;	// save original index for sorting
+            $rules = $Keywords[$k][2];
+            $Keywords[$k][3] = $k;	// save original index for sorting
             for($i=0; $i<count($rules); $i++)
             {
                 $r = $rules[$i];
@@ -170,15 +170,15 @@ class AI
             }
         }
         // now sort keywords by rank (highest first)
-        sort($AIKeywords, "self::_sortKeywords");
+        sort($Keywords, "self::_sortKeywords");
         // and compose regexps and refs for pres and posts
-        if($AIPres && count($AIPres))
+        if($Pres && count($Pres))
         {
             $a = [];
-            for($i = 0; $i < count($AIPres); $i+=2)
+            for($i = 0; $i < count($Pres); $i+=2)
             {
-                $a[] = $AIPres[i];
-                $this->pres[$AIPres[$i]] = $AIPres[$i+1];
+                $a[] = $Pres[i];
+                $this->pres[$Pres[$i]] = $Pres[$i+1];
             }
             $this->preExp = '\\b('.join('|', $a).')\\b';
         }
@@ -188,13 +188,13 @@ class AI
             $this->preExp = '/####/';
             $this->pres['####'] = '####';
         }
-        if($AIPosts && count($AIPosts))
+        if($Posts && count($Posts))
         {
             $a = [];
-            for($i=0; $i<count($AIPosts); $i+=2)
+            for($i=0; $i<count($Posts); $i+=2)
             {
-                $a[] = $AIPosts[i];
-                $this->posts[$AIPosts[i]] = $AIPosts[i+1];
+                $a[] = $Posts[i];
+                $this->posts[$Posts[i]] = $Posts[i+1];
             }
             $this->postExp = '\\b('.join('|', $a).')\\b';
         }
@@ -205,9 +205,9 @@ class AI
             $this->posts['####'] = '####';
         }
         // check for AIQuits and install default if missing
-        if (!isset($AIQuits))
+        if (!isset($Quits))
         {
-            $AIQuits = [];
+            $Quits = [];
         }
         // done
         $this->_dataParsed = true;
@@ -228,8 +228,8 @@ class AI
     }
     function transform($text)
     {
-        global $AIQuits;
-        global $AIKeywords;
+        global $Quits;
+        global $Keywords;
         $rpl = '';
         $this->quit = false;
         // unify text string
@@ -248,9 +248,9 @@ class AI
             if($part != '')
             {
                 // check for quit expression
-                for ($q=0; $q<count($AIQuits); $q++)
+                for ($q=0; $q<count($Quits); $q++)
                 {
-                    if($AIQuits[$q] == $part)
+                    if($Quits[$q] == $part)
                     {
                         $this->quit = true;
                         return $this->getFinal();
@@ -272,9 +272,9 @@ class AI
                 }
                 $this->sentence = $part;
                 // loop through keywords
-                for($k = 0; $k<count($AIKeywords); $k++)
+                for($k = 0; $k<count($Keywords); $k++)
                 {
-                    if(preg_match('/\\b'.$AIKeywords[$k][0].'\\b/i', $part))
+                    if(preg_match('/\\b'.$Keywords[$k][0].'\\b/i', $part))
                     {
                         $rpl = $this->_execRule($k);
                     }
@@ -298,8 +298,8 @@ class AI
     }
     function _execRule($k)
     {
-        global $AIKeywords;
-        $rule = $AIKeywords[$k];
+        global $Keywords;
+        $rule = $Keywords[$k];
         $decomps = $rule[2];
         $paramre = '/\(([0-9]+)\)/';
         for($i=0; $i<count($decomps); $i++)
@@ -324,8 +324,8 @@ class AI
                 }
                 $rpl = $reasmbs[$ri];
                 if($this->debug)
-                    FEED::echoln('Match:\nKey: '.$AIKeywords[$k][0].
-                        '\nRank: '.$AIKeywords[$k][1].
+                    FEED::echoln('Match:\nKey: '.$Keywords[$k][0].
+                        '\nRank: '.$Keywords[$k][1].
                         '\nDecomp: '.$decomps[$i][0].
                         '\nReasmb: '.$rpl.
                         '\nMemflag: '.$memflag);
@@ -375,15 +375,15 @@ class AI
     }
     function _postTransform($s)
     {
-        global $AIPostTransforms;
+        global $PostTransforms;
         // final cleanings
         $s = preg_replace('/\s{2,}/', ' ', $s);
         $s = preg_replace('/\s+\./', '.', $s);
-        if( $AIPostTransforms && count($AIPostTransforms) )
+        if( $PostTransforms && count($PostTransforms) )
         {
-            for($i=0; $i<count($AIPostTransforms); $i+=2)
+            for($i=0; $i<count($PostTransforms); $i+=2)
             {
-                $s = preg_replace($AIPostTransforms[i], $AIPostTransforms[$i+1], $s);
+                $s = preg_replace($PostTransforms[i], $PostTransforms[$i+1], $s);
             }
         }
         // capitalize first char (v.1.1: work around lambda function)
@@ -397,10 +397,10 @@ class AI
     }
     function _getRuleIndexByKey($key)
     {
-        global $AIKeywords;
-        for($k=0; $k < count($AIKeywords); $k++)
+        global $Keywords;
+        for($k=0; $k < count($Keywords); $k++)
         {
-            if($AIKeywords[$k][0] == $key)
+            if($Keywords[$k][0] == $key)
                 return $k;
         }
         return -1;
@@ -432,13 +432,13 @@ class AI
     }
     function getFinal()
     {
-        global $AIFinals;
-        return $AIFinals[floor(FEED::randomFloat() * count($AIFinals))];
+        global $Finals;
+        return $Finals[floor(FEED::randomFloat() * count($Finals))];
     }
     function getInitial()
     {
-        global $AIInitials;
-        return $AIInitials[floor(FEED::randomFloat() * count($AIInitials))];
+        global $Initials;
+        return $Initials[floor(FEED::randomFloat() * count($Initials))];
     }
 }
 ?>
