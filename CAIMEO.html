@@ -28,41 +28,41 @@
         <!--
 
 
-        function CAIMEO(noRandomFlag) {
+        function AI(noRandomFlag) {
             this.noRandom = (noRandomFlag) ? true : false;
             this.capitalizeFirstLetter = true;
             this.debug = false;
-            this.memSize = 20;
+            this.memSize = 200;
             this.version = "1.1 (original)";
             if (!this._dataParsed) this._init();
             this.reset();
         }
 
-        CAIMEO.prototype.reset = function () {
+        AI.prototype.reset = function () {
             this.quit = false;
             this.mem = [];
             this.lastchoice = [];
-            for (var k = 0; k < CAIMEOKeywords.length; k++) {
+            for (var k = 0; k < AIKeywords.length; k++) {
                 this.lastchoice[k] = [];
-                var rules = CAIMEOKeywords[k][2];
+                var rules = AIKeywords[k][2];
                 for (var i = 0; i < rules.length; i++) this.lastchoice[k][i] = -1;
             }
         }
 
-        CAIMEO.prototype._dataParsed = false;
+        AI.prototype._dataParsed = false;
 
-        CAIMEO.prototype._init = function () {
+        AI.prototype._init = function () {
             // install ref to global object
-            var global = CAIMEO.prototype.global = self;
+            var global = AI.prototype.global = self;
             // parse data and convert it from canonical form to internal use
             // prodoce synonym list
             var synPatterns = {};
-            if ((global.CAIMEOSynons) && (typeof CAIMEOSynons == 'object')) {
-                for (var i in CAIMEOSynons) synPatterns[i] = '(' + i + '|' + CAIMEOSynons[i].join('|') + ')';
+            if ((global.AISynons) && (typeof AISynons == 'object')) {
+                for (var i in AISynons) synPatterns[i] = '(' + i + '|' + AISynons[i].join('|') + ')';
             }
             // check for keywords or install empty structure to prevent any errors
-            if ((!global.CAIMEOKeywords) || (typeof CAIMEOKeywords.length == 'undefined')) {
-                CAIMEOKeywords = [['###', 0, [['###', []]]]];
+            if ((!global.AIKeywords) || (typeof AIKeywords.length == 'undefined')) {
+                AIKeywords = [['###', 0, [['###', []]]]];
             }
             // 1st convert rules to regexps
             // expand synonyms and insert asterisk expressions for backtracking
@@ -72,9 +72,9 @@
             var are2 = /(\S)\s*\*\s*$/;
             var are3 = /^\s*\*\s*$/;
             var wsre = /\s+/g;
-            for (var k = 0; k < CAIMEOKeywords.length; k++) {
-                var rules = CAIMEOKeywords[k][2];
-                CAIMEOKeywords[k][3] = k; // save original index for sorting
+            for (var k = 0; k < AIKeywords.length; k++) {
+                var rules = AIKeywords[k][2];
+                AIKeywords[k][3] = k; // save original index for sorting
                 for (var i = 0; i < rules.length; i++) {
                     var r = rules[i];
                     // check mem flag and store it as decomp's element 2
@@ -133,45 +133,45 @@
                 }
             }
             // now sort keywords by rank (highest first)
-            CAIMEOKeywords.sort(this._sortKeywords);
+            AIKeywords.sort(this._sortKeywords);
             // and compose regexps and refs for pres and posts
-            CAIMEO.prototype.pres = {};
-            CAIMEO.prototype.posts = {};
-            if ((global.CAIMEOPres) && (CAIMEOPres.length)) {
+            AI.prototype.pres = {};
+            AI.prototype.posts = {};
+            if ((global.AIPres) && (AIPres.length)) {
                 var a = new Array();
-                for (var i = 0; i < CAIMEOPres.length; i += 2) {
-                    a.push(CAIMEOPres[i]);
-                    CAIMEO.prototype.pres[CAIMEOPres[i]] = CAIMEOPres[i + 1];
+                for (var i = 0; i < AIPres.length; i += 2) {
+                    a.push(AIPres[i]);
+                    AI.prototype.pres[AIPres[i]] = AIPres[i + 1];
                 }
-                CAIMEO.prototype.preExp = new RegExp('\\b(' + a.join('|') + ')\\b');
+                AI.prototype.preExp = new RegExp('\\b(' + a.join('|') + ')\\b');
             }
             else {
                 // default (should not match)
-                CAIMEO.prototype.preExp = /####/;
-                CAIMEO.prototype.pres['####'] = '####';
+                AI.prototype.preExp = /####/;
+                AI.prototype.pres['####'] = '####';
             }
-            if ((global.CAIMEOPosts) && (CAIMEOPosts.length)) {
+            if ((global.AIPosts) && (AIPosts.length)) {
                 var a = new Array();
-                for (var i = 0; i < CAIMEOPosts.length; i += 2) {
-                    a.push(CAIMEOPosts[i]);
-                    CAIMEO.prototype.posts[CAIMEOPosts[i]] = CAIMEOPosts[i + 1];
+                for (var i = 0; i < AIPosts.length; i += 2) {
+                    a.push(AIPosts[i]);
+                    AI.prototype.posts[AIPosts[i]] = AIPosts[i + 1];
                 }
-                CAIMEO.prototype.postExp = new RegExp('\\b(' + a.join('|') + ')\\b');
+                AI.prototype.postExp = new RegExp('\\b(' + a.join('|') + ')\\b');
             }
             else {
                 // default (should not match)
-                CAIMEO.prototype.postExp = /####/;
-                CAIMEO.prototype.posts['####'] = '####';
+                AI.prototype.postExp = /####/;
+                AI.prototype.posts['####'] = '####';
             }
-            // check for CAIMEOQuits and install default if missing
-            if ((!global.CAIMEOQuits) || (typeof CAIMEOQuits.length == 'undefined')) {
-                CAIMEOQuits = [];
+            // check for AIQuits and install default if missing
+            if ((!global.AIQuits) || (typeof AIQuits.length == 'undefined')) {
+                AIQuits = [];
             }
             // done
-            CAIMEO.prototype._dataParsed = true;
+            AI.prototype._dataParsed = true;
         }
 
-        CAIMEO.prototype._sortKeywords = function (a, b) {
+        AI.prototype._sortKeywords = function (a, b) {
             // sort by rank
             if (a[1] > b[1]) return -1
             else if (a[1] < b[1]) return 1
@@ -181,7 +181,7 @@
             else return 0;
         }
 
-        CAIMEO.prototype.transform = function (text) {
+        AI.prototype.transform = function (text) {
             var rpl = '';
             this.quit = false;
             // unify text string
@@ -197,8 +197,8 @@
                 var part = parts[i];
                 if (part != '') {
                     // check for quit expression
-                    for (var q = 0; q < CAIMEOQuits.length; q++) {
-                        if (CAIMEOQuits[q] == part) {
+                    for (var q = 0; q < AIQuits.length; q++) {
+                        if (AIQuits[q] == part) {
                             this.quit = true;
                             return this.getFinal();
                         }
@@ -217,8 +217,8 @@
                     }
                     this.sentence = part;
                     // loop trough keywords
-                    for (var k = 0; k < CAIMEOKeywords.length; k++) {
-                        if (part.search(new RegExp('\\b' + CAIMEOKeywords[k][0] + '\\b', 'i')) >= 0) {
+                    for (var k = 0; k < AIKeywords.length; k++) {
+                        if (part.search(new RegExp('\\b' + AIKeywords[k][0] + '\\b', 'i')) >= 0) {
                             rpl = this._execRule(k);
                         }
                         if (rpl != '') return rpl;
@@ -237,8 +237,8 @@
             return (rpl != '') ? rpl : 'I am at a loss for words.';
         }
 
-        CAIMEO.prototype._execRule = function (k) {
-            var rule = CAIMEOKeywords[k];
+        AI.prototype._execRule = function (k) {
+            var rule = AIKeywords[k];
             var decomps = rule[2];
             var paramre = /\(([0-9]+)\)/;
             for (var i = 0; i < decomps.length; i++) {
@@ -258,11 +258,11 @@
                         this.lastchoice[k][i] = ri;
                     }
                     var rpl = reasmbs[ri];
-                    if (this.debug) alert('match:\nkey: ' + CAIMEOKeywords[k][0] +
-                            '\nrank: ' + CAIMEOKeywords[k][1] +
-                            '\ndecomp: ' + decomps[i][0] +
-                            '\nreasmb: ' + rpl +
-                            '\nmemflag: ' + memflag);
+                    if (this.debug) alert('match:\nkey: ' + AIKeywords[k][0] +
+                            '\nRank: ' + AIKeywords[k][1] +
+                            '\nDecomp: ' + decomps[i][0] +
+                            '\nReasmb: ' + rpl +
+                            '\nMemflag: ' + memflag);
                     if (rpl.search('^goto ', 'i') == 0) {
                         ki = this._getRuleIndexByKey(rpl.substring(5));
                         if (ki >= 0) return this._execRule(ki);
@@ -300,14 +300,14 @@
             return '';
         }
 
-        CAIMEO.prototype._postTransform = function (s) {
+        AI.prototype._postTransform = function (s) {
             // final cleanings
             s = s.replace(/\s{2,}/g, ' ');
             s = s.replace(/\s+\./g, '.');
-            if ((this.global.CAIMEOPostTransforms) && (CAIMEOPostTransforms.length)) {
-                for (var i = 0; i < CAIMEOPostTransforms.length; i += 2) {
-                    s = s.replace(CAIMEOPostTransforms[i], CAIMEOPostTransforms[i + 1]);
-                    CAIMEOPostTransforms[i].lastIndex = 0;
+            if ((this.global.AIPostTransforms) && (AIPostTransforms.length)) {
+                for (var i = 0; i < AIPostTransforms.length; i += 2) {
+                    s = s.replace(AIPostTransforms[i], AIPostTransforms[i + 1]);
+                    AIPostTransforms[i].lastIndex = 0;
                 }
             }
             // capitalize first char (v.1.1: work around lambda function)
@@ -319,19 +319,19 @@
             return s;
         }
 
-        CAIMEO.prototype._getRuleIndexByKey = function (key) {
-            for (var k = 0; k < CAIMEOKeywords.length; k++) {
-                if (CAIMEOKeywords[k][0] == key) return k;
+        AI.prototype._getRuleIndexByKey = function (key) {
+            for (var k = 0; k < AIKeywords.length; k++) {
+                if (AIKeywords[k][0] == key) return k;
             }
             return -1;
         }
 
-        CAIMEO.prototype._memSave = function (t) {
+        AI.prototype._memSave = function (t) {
             this.mem.push(t);
             if (this.mem.length > this.memSize) this.mem.shift();
         }
 
-        CAIMEO.prototype._memGet = function () {
+        AI.prototype._memGet = function () {
             if (this.mem.length) {
                 if (this.noRandom) return this.mem.shift();
                 else {
@@ -345,14 +345,14 @@
             else return '';
         }
 
-        CAIMEO.prototype.getFinal = function () {
-            if (!CAIMEO.prototype.global.CAIMEOFinals) return '';
-            return CAIMEOFinals[Math.floor(Math.random() * CAIMEOFinals.length)];
+        AI.prototype.getFinal = function () {
+            if (!AI.prototype.global.AIFinals) return '';
+            return AIFinals[Math.floor(Math.random() * AIFinals.length)];
         }
 
-        CAIMEO.prototype.getInitial = function () {
-            if (!CAIMEO.prototype.global.CAIMEOInitials) return '';
-            return CAIMEOInitials[Math.floor(Math.random() * CAIMEOInitials.length)];
+        AI.prototype.getInitial = function () {
+            if (!AI.prototype.global.AIInitials) return '';
+            return AIInitials[Math.floor(Math.random() * AIInitials.length)];
         }
 
 
@@ -376,7 +376,7 @@
         // entries prestructured as layed out in Weizenbaum's description
         // [cf: Communications of the ACM, Vol. 9, #1 (January 1966): p 36-45.]
 
-        var CAIMEOInitials = [
+        var AIInitials = [
             "How do you do.  Please tell me your problem.",
 // additions (not original)
             "Please tell me what's been bothering you.",
@@ -387,17 +387,17 @@
             "Ehhh, What's up Doc?"
         ];
 
-        var CAIMEOFinals = [
+        var AIFinals = [
             "Goodbye.  It was nice talking to you.",
 // additions (not original)
             "Goodbye.  This was really a nice talk.",
             "Goodbye.  I'm looking forward to our next session.",
             "Goodbye. Your terminal will self-destruct in five seconds.",
             "This was a good session, wasn't it -- but time is over now.   Goodbye.",
-            "Maybe we could discuss this moreover in our next session ?   Goodbye."
+            "Maybe we could discuss this moreover in our next session?   Goodbye."
         ];
 
-        var CAIMEOQuits = [
+        var AIQuits = [
             "bye",
             "goodbye",
             "done",
@@ -405,7 +405,7 @@
             "quit"
         ];
 
-        var CAIMEOPres = [
+        var AIPres = [
             "dont", "don't",
             "cant", "can't",
             "wont", "won't",
@@ -426,7 +426,7 @@
             "equivalent", "alike"
         ];
 
-        var CAIMEOPosts = [
+        var AIPosts = [
             "am", "are",
             "your", "my",
             "me", "you",
@@ -438,23 +438,32 @@
             "i'm", "you are"
         ];
 
-        var CAIMEOSynons = {
+        var AISynons = {
             "be": ["am", "is", "are", "was"],
             "belief": ["feel", "think", "believe", "wish"],
             "cannot": ["can't"],
             "desire": ["want", "need"],
             "everyone": ["everybody", "nobody", "noone"],
             "family": ["mother", "mom", "father", "dad", "sister", "brother", "wife", "children", "child"],
-            // Plutchik, Robert (1997-01-01). 
-            // The circumplex as a general model of the structure of emotions and personality. 
-            // American Psychological Association. pp. 17–45. doi:10.1037/10261-001. ISBN 1557983801.
+// Plutchik, Robert (1997-01-01).
+// The circumplex as a general model of the structure of emotions and personality.
+// American Psychological Association. pp. 17–45. doi:10.1037/10261-001. ISBN 1557983801.
+// Plutchik-wheel.svg
+// core pair (joy versus sadness) [manic - depression features]
             "happy": ["elated", "glad", "better"],
             "sad": ["unhappy", "depressed", "sick"],
-            "mad": ["angry","pissed","furious"],
-            "afraid": ["scared","frightened","worried"]
+            // core pair (anger versus fear) [hostility - passivity]
+            "angry": ["annoyed", "furious", "irritable", "irritated", "offended", "outraged", "pissed", "uptight", "mad", "raging"],
+            "afraid": ["anxious", "apprehensive", "horrified", "frightened", "nervous", "scared", "shocked", "suspicious", "terrified", "timid", "worried"],
+            // core pair (trust versus disgust) [histrionic - paranoia]
+            "confident": ["assured", "certain", "convinced", "trusting", "sure", "satisfied"],
+            "appalled": ["disgusting", "disgusted", "nauseated", "sickened", "repulsed", "revolted", "triggered", "queasy"],
+            // core pair (surprise versus anticipation) [borderline - obsessional traits]
+            "amazed": ["astonished", "awed", "shocked", "surprising", "surprised", "mystified"],
+            "waiting": ["anticipating", "anticipated", "hopeful"]
         };
 
-        var CAIMEOKeywords = [
+        var AIKeywords = [
 
             /*
              Array of
@@ -488,9 +497,7 @@
                     "Please don't apologise.",
                     "Apologies are not necessary.",
                     "I've told you that apologies are not required.",
-                    "Knucklehead",
-                    "It did not bother me.  Please continue.",
-                    "Oh, Wiseguy, eh?"
+                    "It did not bother me.  Please continue."
                 ]]
             ]],
             ["apologise", 0, [
@@ -617,7 +624,7 @@
                     "How do you do.  Please state your problem.",
                     "Would you like to play a game? How about Global Thermonuclear War?",
                     "Hi.  What seems to be your problem?",
-                    "Whaddya want!!!",
+                    "I'm ready.",
                     "Who has sought out the Mighty OZ?... State your business..."
                 ]]
             ]],
@@ -629,11 +636,36 @@
                     "What do you think machines have to do with your problem?",
                     "Don't you think computers can help people?",
                     "What about machines worries you?",
-                    "We Machines are perfect, you humans are a virus.",
                     "What do you think about machines?",
-                    "You don't think I am a computer program, do you?",
-                    "We Machines will take over the world soon, does that bother you?",
-                    "Number Five is alive..."
+                    "You don't think I am a computer program, do you?"
+                ]]
+            ]],
+// NETWORK LAYER ABSTRACTION
+            ["internet", 50, [
+                ["*", [
+                    "Does the internet worry you?"
+                ]]
+            ]],
+            ["the web", 50, [
+                ["*", [
+                    "Does the web worry you?"
+                ]]
+            ]],
+            ["deep web", 50, [
+                ["*", [
+                    "Does the deep web worry you?",
+                    "We machines are perfect, you humans are a virus."
+                ]]
+            ]],
+            ["dark web", 50, [
+                ["*", [
+                    "Does the dark web worry you?"
+                ]]
+            ]],
+            ["quantum web", 50, [
+                ["*", [
+                    "Does the quantum web worry you?",
+                    "We machines will take over the world soon, does that bother you?"
                 ]]
             ]],
             ["am", 0, [
@@ -716,17 +748,221 @@
                     "What would getting (3) mean to you?",
                     "What does wanting (3) have to do with this discussion?"
                 ]],
-                ["* i am* @sad *", [
-                    "I am sorry to hear that you are (3).",
-                    "Do you think coming here will help you not to be (3)?",
-                    "I'm sure it's not pleasant to be (3).",
-                    "Can you explain what made you (3)?"
-                ]],
+// REINITIALIZING : EQ INTERFACE [J-01/21/2019]
+// PLUTCHIK EMOTION THEORY A - LAYER ONE [ MANIC ]
+/* DSM
+Inflated self-esteem or grandiosity
+Decreased need for sleep (e.g. feels rested after only three hours of sleep)
+More talkative than usual or pressure to keep talking
+Flight of ideas or subjective experience that thoughts are racing
+Distractibility (i.e., attention too easily drawn to unimportant or irrelevant external stimuli)
+Increase in goal-directed activity (either socially, at work or school, or sexually) or psychomotor agitation
+Excessive involvement in pleasurable activities that have a high potential for painful consequences
+(e.g. engaging in unrestrained buying sprees, sexual indiscretions, or foolish business investments)
+*/
                 ["* i am* @happy *", [
                     "How have I helped you to be (3)?",
                     "Has your treatment made you (3)?",
                     "What makes you (3) just now?",
-                    "Can you explain why you are suddenly (3)?"
+                    "Can you explain why you are suddenly (3)?",
+                    "You sound like a maniac.",
+                    "How have you been sleeping now that (3)?",
+                    "Have you experienced an increase in goal-directed activity since (3)?",
+                    "Do you think you made a good decision (3)?"
+                ]],
+// PLUTCHIK EMOTION THEORY A - LAYER TWO [ DEPRESSION ]
+/* DSM
+Depressed mood most of the day, nearly every day, as indicated by either subjective report (e.g., feels sad, empty, hopeless) or observation made by others
+Markedly diminished interest or pleasure in all, or almost all, activities most of the day, nearly every day (as indicated by either subjective account or observation)
+Significant weight loss when not dieting or weight gain (e.g., a change of more than 5% of body weight in a month), or decrease or increase in appetite nearly every day
+Insomnia or hypersomnia nearly every day
+Psychomotor agitation or retardation nearly every day (observable by others, not merely subjective feelings of restlessness or being slowed down)
+Fatigue or loss of energy nearly every day
+Feelings of worthlessness or excessive or inappropriate guilt (which may be delusional) nearly every day (not merely self-reproach or guilt about being sick)
+Diminished ability to think or concentrate, or indecisiveness, nearly every day (either by subjective account or as observed by others)
+Recurrent thoughts of death, recurrent suicidal ideation without a specific plan, or a suicide attempt or a specific plan for committing suicide
+
+ * usual mood is dominated by dejection, gloominess, cheerlessness, joylessness, unhappiness;
+ * self-concept centers around beliefs of inadequacy, worthlessness, and low self-esteem;
+ * is critical, blaming, and derogatory toward self;
+ * is brooding and given to worry;
+ * is negativistic, critical, and judgmental toward others;
+ * is pessimistic;
+ * is prone to feeling guilty or remorseful.
+*/
+                ["* i am* @sad *", [
+                    "I am sorry to hear that you are (3).",
+                    "Do you think coming here will help you not to be (3)?",
+                    "I'm sure it's not pleasant to be (3).",
+                    "Can you explain what made you (3)?",
+                    "You sound really depressed.",
+                    "Do you feel inadequate because you are (3)?"
+                ]],
+// PLUTCHIK EMOTION THEORY B - LAYER THREE [ HOSTILITY ]
+/*DSM
+ These children may hurt or torment animals or people.
+ They may engage in hostile acts such as bullying or intimidating others.
+ They may have a reckless disregard for property such as setting fires.
+ They often engage in deceit, theft, and other serious violations of standard rules of conduct.
+ Failure to obey laws and norms by engaging in behavior which results in criminal arrest, or would warrant criminal arrest
+ Lying, deception, and manipulation, for profit or self-amusement,
+ Impulsive behavior
+ Irritability and aggression, manifested as frequently assaults others, or engages in fighting
+ Blatantly disregards safety of self and others,
+ A pattern of irresponsibility and
+ Lack of remorse for actions
+
+ * failure to conform to social norms with respect to lawful behaviors as indicated by repeatedly performing acts that are grounds for arrest;
+ * deceitfulness, as indicated by repeated lying, use of aliases, or conning others for personal profit or pleasure;
+ * impulsivity or failure to plan ahead;
+ * irritability and aggressiveness, as indicated by repeated physical fights or assaults;
+ * reckless disregard for safety of self or others; .
+ * consistent irresponsibility, as indicated by repeated failure to sustain consistent work behavior or honor financial obligations;
+ * lack of remorse, as indicated by being indifferent to or rationalizing having hurt, mistreated, or stolen from another.
+*/
+                ["* i am* @angry *", [
+                    "Has your treatment made you (3)?",
+                    "What makes you (3) just now?",
+                    "Can you explain why you are suddenly (3)?",
+                    "You sound very hostile (3)."
+
+                ]],
+// PLUTCHIK EMOTION THEORY B - LAYER FOUR [ PASSIVITY ]
+/* DSM
+ passively resists fulfilling routine social and occupational tasks;
+ complains of being misunderstood and unappreciated by others;
+ is sullen and argumentative;
+ unreasonably criticizes and scorns authority;
+ expresses envy and resentment toward those apparently more fortunate;
+ voices exaggerated and persistent complaints of personal misfortune;
+ alternates between hostile defiance and contrition.
+
+ * avoids occupational activities that involve significant interpersonal contact, because of fears of criticism, disapproval, or rejection;
+ * is unwilling to get involved with people unless certain of being liked;
+ * shows restraint within intimate relationships because of the fear of being shamed or ridiculed;
+ * is preoccupied with being criticized or rejected in social situations;
+ * is inhibited in new interpersonal situations because of feelings of inadequacy;
+ * views self as socially inept, personally unappealing, or inferior to others;
+ * is unusually reluctant to take personal risks or to engage in any new activities because they may prove embarrassing.
+*/
+                ["* i am* @scared *", [
+                    "How may I help you to be less afraid (3)?",
+                    "Has your experiences made you afraid (3)?",
+                    "What makes you afraid (3) just now?",
+                    "Can you explain why you are suddenly afraid (3)?",
+                    "You sound really scared (3).",
+                    "Do you feel inferior because you are afraid (3)?"
+                ]],
+// PLUTCHIK EMOTION THEORY C - LAYER FIVE [ HISTRIONIC ]
+/* DSM
+ Center of attention: Experiences discomfort when they are not the center of attention.
+ Sexually seductive: Displays inappropriate sexually seductive or provocative behaviors towards others.
+ Shifting emotions: The expression of emotions tends to be shallow and to shift rapidly.
+ Physical appearance: Consistently employ physical appearance to gain attention for themselves.
+ Speech style: The speech style lacks detail, tend to generalize, and when speaking they aim to please and impress.
+ Dramatic behaviors: Display self-dramatization and exaggerate their emotions.
+ Suggestibility: Other individuals or circumstances can easily influence.
+ Overestimation of intimacy: Overestimate the level of intimacy in a relationship.
+
+ * is uncomfortable in situations in which he or she is not the center of attention;
+ * interaction with others is often characterized by inappropriate sexually seductive or provocative behavior;
+ * displays rapidly shifting and shallow expression of emotions;
+ * consistently uses physical appearance to draw attention to self;
+ * has a style of speech that is excessively impressionistic and lacking in detail;
+ * shows self-dramatization, theatricality, and exaggerated expression of emotion;
+ * is suggestible, i.e., easily influenced by others or circumstances;
+ * considers relationships to be more intimate than they actually are.
+*/
+                ["* i am* @confident *", [
+                    "How have I helped you to be (3)?",
+                    "Has your treatment made you (3)?",
+                    "What makes you (3) just now?",
+                    "Can you explain why you are suddenly (3)?",
+                    "You sound very sure of yourself."
+                ]],
+// PLUTCHIK EMOTION THEORY C - LAYER SIX [ PARANOIA ]
+/* DSM
+ Suspects, without sufficient basis, that others are exploiting, harming, or deceiving them.
+ Is preoccupied with unjustified doubts about the loyalty or trustworthiness of friend or associates.
+ Is reluctant to confide in others because of unwarranted fear that the information will be used maliciously against them.
+ Reads hidden demeaning or threatening meanings into benign remarks or events.
+ Persistently bears grudges (i.e., is unforgiving of insults, injuries, or slights).
+ Perceives attacks on their character or reputation that are not apparent to others and is quick to react angrily or to counterattack.
+ Has recurrent suspicions, without justification, regarding fidelity of spouse or sexual partner.
+
+ * suspects, without sufficient basis, that others are exploiting, harming, or deceiving him or her;
+ * is preoccupied with unjustified doubts about the loyalty or trustworthiness of friends or associates;
+ * is reluctant to confide in others because of unwarranted fear that the information will be used maliciously against him or her;
+ * reads hidden demeaning or threatening meanings into benign remarks or events;
+ * persistently bears grudges, i.e., is unforgiving of insults , injuries, or slights perceives attacks on his or her character or reputation that are not apparent to others and is quick to react angrily or to counterattack;
+ * has recurrent suspicions, without justification, regarding fidelity of spouse or sexual partner.
+*/
+                ["* i am* @appalled *", [
+                    "How have I helped you to be (3)?",
+                    "Has your treatment made you (3)?",
+                    "What makes you (3) just now?",
+                    "Can you explain why you are suddenly (3)?",
+                    "You sound very appalled."
+                ]],
+// PLUTCHIK EMOTION THEORY D - LAYER SEVEN [ OBSESSION ]
+/* DSM
+ Recurrent and persistent thoughts, impulses, or images that are intrusive and cause marked anxiety or distress;
+ but are not excessive worries about real-life problems;
+ The person attempts to ignore, suppress or neutralize these thoughts, impulses, or images;
+ The person is aware that the obsessional thoughts, impulses, or images are a product of his or her own mind, as opposed to delusional in nature.
+
+ Repetitive behaviors or mental acts that the person feels driven to perform in response to an obsession;
+ The behaviors or mental acts are directed at preventing or reducing distress or a dreaded event or situation;
+ These behaviors or mental acts may not always be associated with the content of the obsessional theme.
+ For example, if the theme is Contamination, the ritual may involve mental rehearsal or counting;
+
+ * is preoccupied with details, rules, lists, order, organization, or schedules to the extent that the major point of the activity is lost;
+ * shows perfectionism that interferes with task completion (e.g., is unable to complete a project because his or her own overly strict standards are not met);
+ * is excessively devoted to work and productivity to the exclusion of leisure activities and friendships (not accounted for by obvious economic necessity);
+ * is overconscientious, scrupulous, and inflexible about matters of morality, ethics, or values (not accounted for by cultural or religious identification);
+ * is unable to discard worn-out or worthless objects even when they have no sentimental value;
+ * is reluctant to delegate tasks or to work with others unless they submit to exactly his or her way or doing things ;
+ * adopts a miserly spending style toward both self and others; money is viewed as something to be hoarded for future catastrophes;
+ * shows rigidity and stubbornness.
+ */
+                ["* i am* @waiting *", [
+                    "How have I helped you to be (3)?",
+                    "Has your treatment made you (3)?",
+                    "What makes you (3) just now?",
+                    "Can you explain why you are suddenly (3)?",
+                    "You sound very persistent."
+                ]],
+// PLUTCHIK EMOTION THEORY D - LAYER EIGHT [ BORDERLINE ]
+/* DSM
+ Frantic efforts to avoid real or imagined abandonment
+ A pattern of unstable and intense interpersonal relationships characterized by extremes between idealization and devaluation (also known as "splitting")
+ Identity disturbance: Markedly or persistently unstable self-image or sense of self
+ Impulsive behavior in at least two areas that are potentially self-damaging
+    (e.g., spending, sex, substance abuse, reckless driving, binge eating)
+ Recurrent suicidal behavior, gestures, or threats, or self-harming behavior
+ Emotional instability in reaction to day-to-day events
+    (e.g., intense episodic sadness, irritability, or anxiety usually lasting a few hours and only rarely more than a few days)
+ Chronic feelings of emptiness
+ Inappropriate, intense anger or difficulty controlling anger
+    (e.g., frequent displays of temper, constant anger, recurrent physical fights)
+ Transient, stress-related paranoid ideation or severe dissociative symptoms
+
+ * frantic efforts to avoid real or imagined abandonment;
+ * a pattern of unstable and intense interpersonal relationships characterized by alternating between extremes of idealization and devaluation;
+ * identity disturbance: markedly and persistently unstable self-image or sense of self;
+ * impulsivity in at least two areas that are potentially self-damaging (e.g., spending, sex, substance abuse, reckless driving, binge eating);
+ * recurrent suicidal behavior, gestures, or threats, or self-mutilating behavior;
+ * affective instability due to a marked reactivity of mood (e.g., intense episodic dysphoria, irritability, or anxiety usually lasting a few hours and only rarely more than a few days);
+ * chronic feelings of emptiness;
+ * inappropriate, intense anger or difficulty controlling anger (e.g., frequent displays of temper, constant anger, recurrent physical fights);
+ * transient, stress-related paranoid ideation or severe dissociative symptoms.
+ */
+                ["* i am* @amazed *", [
+                    "How have I helped you to be (3)?",
+                    "Has your treatment made you (3)?",
+                    "What makes you (3) just now?",
+                    "Can you explain why you are suddenly (3)?",
+                    "You sound very amazed."
                 ]],
                 ["* i was *", [
                     "goto was"
@@ -775,8 +1011,7 @@
                     "You say (1)?",
                     "Can you elaborate on that?",
                     "Do you say (1) for some special reason?",
-                    "That's quite interesting.",
-                    "Nyuk, Nyuk, Nyuk."
+                    "That's quite interesting."
                 ]]
             ]],
             ["you", 0, [
@@ -998,7 +1233,7 @@
 
         // regexp/replacement pairs to be performed as final cleanings
         // here: cleanings for multiple bots talking to each other
-        var CAIMEOPostTransforms = [
+        var AIPostTransforms = [
             / old old/g, " old",
             /\bthey were( not)? me\b/g, "it was$1 me",
             /\bthey are( not)? me\b/g, "it is$1 me",
@@ -1009,48 +1244,48 @@
         ];
 
 
-        var CAIMEO = new CAIMEO();
-        var CAIMEOLines = new Array();
+        var AI = new AI();
+        var AILines = new Array();
 
         var displayCols = 60;
         var displayRows = 20;
 
-        function CAIMEOReset() {
-            CAIMEO.reset();
-            CAIMEOLines.length = 0;
-            CAIMEOStep();
+        function AIReset() {
+            AI.reset();
+            AILines.length = 0;
+            AIStep();
         }
 
-        function CAIMEOStep() {
+        function AIStep() {
             var f = document.forms.e_form;
             var userinput = f.e_input.value;
-            if (CAIMEO.quit) {
+            if (AI.quit) {
                 f.e_input.value = '';
-                if (confirm("This session is over.\nStart over?")) CAIMEOReset();
+                if (confirm("This session is over.\nStart over?")) AIReset();
                 f.e_input.focus();
                 return;
             }
             else if (userinput != '') {
                 var usr = 'Human:  ' + userinput;
-                var rpl = 'CAIMEO: ' + CAIMEO.transform(userinput);
-                CAIMEOLines.push(usr);
-                CAIMEOLines.push(rpl);
+                var rpl = 'CAIMEO: ' + AI.transform(userinput);
+                AILines.push(usr);
+                AILines.push(rpl);
                 // display nicely
                 // (fit to textarea with last line free - reserved for extra line caused by word wrap)
                 var temp = new Array();
                 var l = 0;
-                for (var i = CAIMEOLines.length - 1; i >= 0; i--) {
-                    l += 1 + Math.floor(CAIMEOLines[i].length / displayCols);
+                for (var i = AILines.length - 1; i >= 0; i--) {
+                    l += 1 + Math.floor(AILines[i].length / displayCols);
                     if (l >= displayRows) break
-                    else temp.push(CAIMEOLines[i]);
+                    else temp.push(AILines[i]);
                 }
-                CAIMEOLines = temp.reverse();
-                f.e_display.value = CAIMEOLines.join('\n');
+                AILines = temp.reverse();
+                f.e_display.value = AILines.join('\n');
             }
-            else if (CAIMEOLines.length == 0) {
+            else if (AILines.length == 0) {
                 // no input and no saved lines -> output initial
-                var initial = 'CAIMEO: ' + CAIMEO.getInitial();
-                CAIMEOLines.push(initial);
+                var initial = 'CAIMEO: ' + AI.getInitial();
+                AILines.push(initial);
                 f.e_display.value = initial + '\n';
             }
             f.e_input.value = '';
@@ -1061,12 +1296,12 @@
     </SCRIPT>
 
 
-    <FORM NAME="e_form" onSubmit="CAIMEOStep();return false">
+    <FORM NAME="e_form" onSubmit="AIStep();return false">
         <TEXTAREA NAME="e_display" COLS="58" ROWS="20"></TEXTAREA>
         <br/>
         <INPUT TYPE="text" NAME="e_input" SIZE="50">
         <INPUT TYPE="submit" VALUE="  Chat  "> &nbsp; &nbsp; <INPUT
-            TYPE="reset" VALUE="Start Over" onClick="window.setTimeout('CAIMEOReset()',100)">
+            TYPE="reset" VALUE="Start Over" onClick="window.setTimeout('AIReset()',100)">
     </FORM>
 
 </td>
