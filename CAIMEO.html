@@ -33,7 +33,7 @@
             this.capitalizeFirstLetter = true;
             this.debug = false;
             this.memSize = 200;
-            this.version = "1.1 (original)";
+            this.version = "49.1 (original)";
             if (!this._dataParsed) this._init();
             this.reset();
         }
@@ -42,9 +42,9 @@
             this.quit = false;
             this.mem = [];
             this.lastchoice = [];
-            for (var k = 0; k < AIKeywords.length; k++) {
+            for (var k = 0; k < Keywords.length; k++) {
                 this.lastchoice[k] = [];
-                var rules = AIKeywords[k][2];
+                var rules = Keywords[k][2];
                 for (var i = 0; i < rules.length; i++) this.lastchoice[k][i] = -1;
             }
         }
@@ -57,12 +57,12 @@
             // parse data and convert it from canonical form to internal use
             // prodoce synonym list
             var synPatterns = {};
-            if ((global.AISynons) && (typeof AISynons == 'object')) {
-                for (var i in AISynons) synPatterns[i] = '(' + i + '|' + AISynons[i].join('|') + ')';
+            if ((global.Synons) && (typeof Synons == 'object')) {
+                for (var i in Synons) synPatterns[i] = '(' + i + '|' + Synons[i].join('|') + ')';
             }
             // check for keywords or install empty structure to prevent any errors
-            if ((!global.AIKeywords) || (typeof AIKeywords.length == 'undefined')) {
-                AIKeywords = [['###', 0, [['###', []]]]];
+            if ((!global.Keywords) || (typeof Keywords.length == 'undefined')) {
+                Keywords = [['###', 0, [['###', []]]]];
             }
             // 1st convert rules to regexps
             // expand synonyms and insert asterisk expressions for backtracking
@@ -72,9 +72,9 @@
             var are2 = /(\S)\s*\*\s*$/;
             var are3 = /^\s*\*\s*$/;
             var wsre = /\s+/g;
-            for (var k = 0; k < AIKeywords.length; k++) {
-                var rules = AIKeywords[k][2];
-                AIKeywords[k][3] = k; // save original index for sorting
+            for (var k = 0; k < Keywords.length; k++) {
+                var rules = Keywords[k][2];
+                Keywords[k][3] = k; // save original index for sorting
                 for (var i = 0; i < rules.length; i++) {
                     var r = rules[i];
                     // check mem flag and store it as decomp's element 2
@@ -133,15 +133,15 @@
                 }
             }
             // now sort keywords by rank (highest first)
-            AIKeywords.sort(this._sortKeywords);
+            Keywords.sort(this._sortKeywords);
             // and compose regexps and refs for pres and posts
             AI.prototype.pres = {};
             AI.prototype.posts = {};
-            if ((global.AIPres) && (AIPres.length)) {
+            if ((global.Pres) && (Pres.length)) {
                 var a = new Array();
-                for (var i = 0; i < AIPres.length; i += 2) {
-                    a.push(AIPres[i]);
-                    AI.prototype.pres[AIPres[i]] = AIPres[i + 1];
+                for (var i = 0; i < Pres.length; i += 2) {
+                    a.push(Pres[i]);
+                    AI.prototype.pres[Pres[i]] = Pres[i + 1];
                 }
                 AI.prototype.preExp = new RegExp('\\b(' + a.join('|') + ')\\b');
             }
@@ -150,11 +150,11 @@
                 AI.prototype.preExp = /####/;
                 AI.prototype.pres['####'] = '####';
             }
-            if ((global.AIPosts) && (AIPosts.length)) {
+            if ((global.Posts) && (Posts.length)) {
                 var a = new Array();
-                for (var i = 0; i < AIPosts.length; i += 2) {
-                    a.push(AIPosts[i]);
-                    AI.prototype.posts[AIPosts[i]] = AIPosts[i + 1];
+                for (var i = 0; i < Posts.length; i += 2) {
+                    a.push(Posts[i]);
+                    AI.prototype.posts[Posts[i]] = Posts[i + 1];
                 }
                 AI.prototype.postExp = new RegExp('\\b(' + a.join('|') + ')\\b');
             }
@@ -163,9 +163,9 @@
                 AI.prototype.postExp = /####/;
                 AI.prototype.posts['####'] = '####';
             }
-            // check for AIQuits and install default if missing
-            if ((!global.AIQuits) || (typeof AIQuits.length == 'undefined')) {
-                AIQuits = [];
+            // check for Quits and install default if missing
+            if ((!global.Quits) || (typeof Quits.length == 'undefined')) {
+                Quits = [];
             }
             // done
             AI.prototype._dataParsed = true;
@@ -197,8 +197,8 @@
                 var part = parts[i];
                 if (part != '') {
                     // check for quit expression
-                    for (var q = 0; q < AIQuits.length; q++) {
-                        if (AIQuits[q] == part) {
+                    for (var q = 0; q < Quits.length; q++) {
+                        if (Quits[q] == part) {
                             this.quit = true;
                             return this.getFinal();
                         }
@@ -217,8 +217,8 @@
                     }
                     this.sentence = part;
                     // loop trough keywords
-                    for (var k = 0; k < AIKeywords.length; k++) {
-                        if (part.search(new RegExp('\\b' + AIKeywords[k][0] + '\\b', 'i')) >= 0) {
+                    for (var k = 0; k < Keywords.length; k++) {
+                        if (part.search(new RegExp('\\b' + Keywords[k][0] + '\\b', 'i')) >= 0) {
                             rpl = this._execRule(k);
                         }
                         if (rpl != '') return rpl;
@@ -238,7 +238,7 @@
         }
 
         AI.prototype._execRule = function (k) {
-            var rule = AIKeywords[k];
+            var rule = Keywords[k];
             var decomps = rule[2];
             var paramre = /\(([0-9]+)\)/;
             for (var i = 0; i < decomps.length; i++) {
@@ -258,8 +258,8 @@
                         this.lastchoice[k][i] = ri;
                     }
                     var rpl = reasmbs[ri];
-                    if (this.debug) alert('match:\nkey: ' + AIKeywords[k][0] +
-                            '\nRank: ' + AIKeywords[k][1] +
+                    if (this.debug) alert('Match:\nKey: ' + Keywords[k][0] +
+                            '\nRank: ' + Keywords[k][1] +
                             '\nDecomp: ' + decomps[i][0] +
                             '\nReasmb: ' + rpl +
                             '\nMemflag: ' + memflag);
@@ -304,10 +304,10 @@
             // final cleanings
             s = s.replace(/\s{2,}/g, ' ');
             s = s.replace(/\s+\./g, '.');
-            if ((this.global.AIPostTransforms) && (AIPostTransforms.length)) {
-                for (var i = 0; i < AIPostTransforms.length; i += 2) {
-                    s = s.replace(AIPostTransforms[i], AIPostTransforms[i + 1]);
-                    AIPostTransforms[i].lastIndex = 0;
+            if ((this.global.PostTransforms) && (PostTransforms.length)) {
+                for (var i = 0; i < PostTransforms.length; i += 2) {
+                    s = s.replace(PostTransforms[i], PostTransforms[i + 1]);
+                    PostTransforms[i].lastIndex = 0;
                 }
             }
             // capitalize first char (v.1.1: work around lambda function)
@@ -320,8 +320,8 @@
         }
 
         AI.prototype._getRuleIndexByKey = function (key) {
-            for (var k = 0; k < AIKeywords.length; k++) {
-                if (AIKeywords[k][0] == key) return k;
+            for (var k = 0; k < Keywords.length; k++) {
+                if (Keywords[k][0] == key) return k;
             }
             return -1;
         }
@@ -346,13 +346,13 @@
         }
 
         AI.prototype.getFinal = function () {
-            if (!AI.prototype.global.AIFinals) return '';
-            return AIFinals[Math.floor(Math.random() * AIFinals.length)];
+            if (!AI.prototype.global.Finals) return '';
+            return Finals[Math.floor(Math.random() * Finals.length)];
         }
 
         AI.prototype.getInitial = function () {
-            if (!AI.prototype.global.AIInitials) return '';
-            return AIInitials[Math.floor(Math.random() * AIInitials.length)];
+            if (!AI.prototype.global.Initials) return '';
+            return Initials[Math.floor(Math.random() * Initials.length)];
         }
 
 
@@ -376,7 +376,7 @@
         // entries prestructured as layed out in Weizenbaum's description
         // [cf: Communications of the ACM, Vol. 9, #1 (January 1966): p 36-45.]
 
-        var AIInitials = [
+        var Initials = [
             "How do you do.  Please tell me your problem.",
 // additions (not original)
             "Please tell me what's been bothering you.",
@@ -387,7 +387,7 @@
             "Ehhh, What's up Doc?"
         ];
 
-        var AIFinals = [
+        var Finals = [
             "Goodbye.  It was nice talking to you.",
 // additions (not original)
             "Goodbye.  This was really a nice talk.",
@@ -397,7 +397,7 @@
             "Maybe we could discuss this moreover in our next session?   Goodbye."
         ];
 
-        var AIQuits = [
+        var Quits = [
             "bye",
             "goodbye",
             "done",
@@ -405,7 +405,7 @@
             "quit"
         ];
 
-        var AIPres = [
+        var Pres = [
             "dont", "don't",
             "cant", "can't",
             "wont", "won't",
@@ -426,7 +426,7 @@
             "equivalent", "alike"
         ];
 
-        var AIPosts = [
+        var Posts = [
             "am", "are",
             "your", "my",
             "me", "you",
@@ -438,7 +438,7 @@
             "i'm", "you are"
         ];
 
-        var AISynons = {
+        var Synons = {
             "be": ["am", "is", "are", "was"],
             "belief": ["feel", "think", "believe", "wish"],
             "cannot": ["can't"],
@@ -463,7 +463,7 @@
             "waiting": ["anticipating", "anticipated", "hopeful"]
         };
 
-        var AIKeywords = [
+        var Keywords = [
 
             /*
              Array of
@@ -1233,7 +1233,7 @@ Recurrent thoughts of death, recurrent suicidal ideation without a specific plan
 
         // regexp/replacement pairs to be performed as final cleanings
         // here: cleanings for multiple bots talking to each other
-        var AIPostTransforms = [
+        var PostTransforms = [
             / old old/g, " old",
             /\bthey were( not)? me\b/g, "it was$1 me",
             /\bthey are( not)? me\b/g, "it is$1 me",
@@ -1245,47 +1245,47 @@ Recurrent thoughts of death, recurrent suicidal ideation without a specific plan
 
 
         var AI = new AI();
-        var AILines = new Array();
+        var Lines = new Array();
 
         var displayCols = 60;
         var displayRows = 20;
 
-        function AIReset() {
+        function Reset() {
             AI.reset();
-            AILines.length = 0;
-            AIStep();
+            Lines.length = 0;
+            Step();
         }
 
-        function AIStep() {
+        function Step() {
             var f = document.forms.e_form;
             var userinput = f.e_input.value;
             if (AI.quit) {
                 f.e_input.value = '';
-                if (confirm("This session is over.\nStart over?")) AIReset();
+                if (confirm("This session is over.\nStart over?")) Reset();
                 f.e_input.focus();
                 return;
             }
             else if (userinput != '') {
                 var usr = 'Human:  ' + userinput;
                 var rpl = 'CAIMEO: ' + AI.transform(userinput);
-                AILines.push(usr);
-                AILines.push(rpl);
+                Lines.push(usr);
+                Lines.push(rpl);
                 // display nicely
                 // (fit to textarea with last line free - reserved for extra line caused by word wrap)
                 var temp = new Array();
                 var l = 0;
-                for (var i = AILines.length - 1; i >= 0; i--) {
-                    l += 1 + Math.floor(AILines[i].length / displayCols);
+                for (var i = Lines.length - 1; i >= 0; i--) {
+                    l += 1 + Math.floor(Lines[i].length / displayCols);
                     if (l >= displayRows) break
-                    else temp.push(AILines[i]);
+                    else temp.push(Lines[i]);
                 }
-                AILines = temp.reverse();
-                f.e_display.value = AILines.join('\n');
+                Lines = temp.reverse();
+                f.e_display.value = Lines.join('\n');
             }
-            else if (AILines.length == 0) {
+            else if (Lines.length == 0) {
                 // no input and no saved lines -> output initial
                 var initial = 'CAIMEO: ' + AI.getInitial();
-                AILines.push(initial);
+                Lines.push(initial);
                 f.e_display.value = initial + '\n';
             }
             f.e_input.value = '';
@@ -1296,12 +1296,12 @@ Recurrent thoughts of death, recurrent suicidal ideation without a specific plan
     </SCRIPT>
 
 
-    <FORM NAME="e_form" onSubmit="AIStep();return false">
+    <FORM NAME="e_form" onSubmit="Step();return false">
         <TEXTAREA NAME="e_display" COLS="58" ROWS="20"></TEXTAREA>
         <br/>
         <INPUT TYPE="text" NAME="e_input" SIZE="50">
         <INPUT TYPE="submit" VALUE="  Chat  "> &nbsp; &nbsp; <INPUT
-            TYPE="reset" VALUE="Start Over" onClick="window.setTimeout('AIReset()',100)">
+            TYPE="reset" VALUE="Start Over" onClick="window.setTimeout('Reset()',100)">
     </FORM>
 
 </td>
