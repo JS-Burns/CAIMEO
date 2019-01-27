@@ -1,4 +1,34 @@
 <?php
+/**
+// SEC_SSY - Security and Encryption Classes
+ * Date: 1/27/2019
+ */
+
+// https://en.wikipedia.org/wiki/Quantum_key_distribution#SECOQC
+// ~J/270119
+
+class QKD {
+
+    private $qbit, $qkd;
+
+    function LQTM()
+    {
+        //  linear quantum turing machine
+        $simulator = "LQTM";
+
+        $this->qbit = QASM_init();
+
+        QASM_setopt( $this->qbit, QASM_SIM, $simulator);
+    }
+}
+
+// https://www.npmjs.com/package/quantum-circuit
+// https://quantum-circuit.com/
+
+// http://web.archive.org/web/20011207175140/http://www.cs.caltech.edu/~thoth/QTMConfig.lsp
+// http://web.archive.org/web/20011207175140/http://www.cs.caltech.edu/~thoth/QTM.lsp
+// http://web.archive.org/web/20011207175140/http://www.cs.caltech.edu/~thoth/QTMexamples.lsp
+
 // Install Apache, PHP, CURL & Tor with apt-get
 // sudo apt-get install -y apache2 php5 php5-curl tor
 

@@ -9,22 +9,21 @@
 
 $Vaults = [
     // "EXAMPLE" => ["cve", "ms", "acronym", "related", "hash", "vt"],
-    "ANALIZA" => ["alexa", "caimeo", "cortana", "eliza", "kalmiya", "siri"],
+    "ANALIZA" => ["alexa", "caimeo", "cortana", "eliza", "siri"],
     "ARCHITOUCH" => ["SMB reconnaissance operation"],
     "DOUBLEPULSAR" =>["backdoor", "implant"],
     "EDUCATEDSCHOLAR" => ["MS09-050"],
     "EMERALDTHREAD" => ["MS10-061"],
     "ETERNALBLUE" => ["MS17-010", "CVE-2017-0144", "autoblue"],
     "ETERNALCHAMPION" => ["CVE-2017-0146", "CVE-2017-0147"],
-    "ETERNALROCKS" => ["SMB Toolkit"],
-    "ETERNALROMANCE" => ["SMBv1 exploit"],
-    "ETERNALSYNERGY" => ["SMBv3 exploit"],
+    "ETERNALROCKS" => ["SMB Toolkit", "need"],
+    "ETERNALROMANCE" => ["SMBv1 exploit", "n0b0dy"],
+    "ETERNALSYNERGY" => ["SMBv3 exploit", "stepchild"],
     "ESKIMOROLL" =>["MS14-068"],
     "EXTRABACON" => ["SNMP exploit against Ciscos ASA software"],
     "HIVE" => ["covert server"],
-    "IISTOUCH" => ["check if IIS version is vulnerable"],
     "SHELL" => ["b374k", "c99", "excalibur", "WSO"],
-    "SMBTOUCH" => ["check if SMB is vulnerable"],
+    "SMBTOUCH" => ["SMB reconnaissance operations"],
     "QUARKMATTER" => ["Apple Bootkit"],
     "VSEP" => ["exploit Vehicle Control Systems", "exploit QNX"]
 ];
@@ -53,17 +52,17 @@ EASYFUN EasyFun 2.2.0 Exploit for WDaemon / IIS MDaemon/WorldClient pre 9.5.6
 EASYPI is an IBM Lotus Notes exploit that gets detected as Stuxnet
 EWOKFRENZY is an exploit for IBM Lotus Domino 6.5.4 & 7.0.2
 EXPLODINGCAN is an IIS 6.0 exploit that creates a remote backdoor
-* ETERNALROMANCE is a SMB1 exploit over TCP port 445 which targets XP, 2003, Vista, 7, Windows 8, 2008, 2008 R2, and gives SYSTEM privileges (MS17-010)
+ETERNALROMANCE is a SMB1 exploit over TCP port 445 which targets XP, 2003, Vista, 7, Windows 8, 2008, 2008 R2, and gives SYSTEM privileges (MS17-010)
 * EDUCATEDSCHOLAR is a SMB exploit (MS09-050)
 * EMERALDTHREAD is a SMB exploit for Windows XP and Server 2003 (MS10-061)
 EMPHASISMINE is a remote IMAP exploit for IBM Lotus Domino 6.6.4 to 8.5.2
 ENGLISHMANSDENTIST sets Outlook Exchange WebAccess rules to trigger executable code on the client's side to send an email to other users
 EPICHERO 0-day exploit (RCE) for Avaya Call Server
 ERRATICGOPHER is a SMBv1 exploit targeting Windows XP and Server 2003
-* ETERNALSYNERGY is a SMBv3 remote code execution flaw for Windows 8 and Server 2012 SP0 (MS17-010)
-* ETERNALBLUE is a SMBv2 exploit for Windows 7 SP1 (MS17-010)
-* ETERNALCHAMPION is a SMBv1 exploit
-* ESKIMOROLL is a Kerberos exploit targeting 2000, 2003, 2008 and 2008 R2 domain controllers
+ETERNALSYNERGY is a SMBv3 remote code execution flaw for Windows 8 and Server 2012 SP0 (MS17-010)
+ETERNALBLUE is a SMBv2 exploit for Windows 7 SP1 (MS17-010)
+ETERNALCHAMPION is a SMBv1 exploit
+ESKIMOROLL is a Kerberos exploit targeting 2000, 2003, 2008 and 2008 R2 domain controllers
 ESTEEMAUDIT is an RDP exploit and backdoor for Windows Server 2003
 ECLIPSEDWING is an RCE exploit for the Server service in Windows Server 2008 and later (MS08-067)
 ETRE is an exploit for IMail 8.10 to 8.22
@@ -77,9 +76,9 @@ ESSAYKEYNOTE
 EVADEFRED
 
 PASSFREELY utility which "Bypasses authentication for Oracle servers"
-* SMBTOUCH check if the target is vulnerable to samba exploits like ETERNALSYNERGY, ETERNALBLUE, ETERNALROMANCE
+SMBTOUCH check if the target is vulnerable to samba exploits like ETERNALSYNERGY, ETERNALBLUE, ETERNALROMANCE
 ERRATICGOPHERTOUCH Check if the target is running some RPC
-* IISTOUCH check if the running IIS version is vulnerable
+IISTOUCH check if the running IIS version is vulnerable
 RPCOUTCH get info about windows via RPC
 DOPU used to connect to machines exploited by ETERNALCHAMPIONS
 NAMEDPIPETOUCH Utility to test for a predefined list of named pipes, mostly AV detection. User can add checks for custom named pipes.
@@ -192,7 +191,7 @@ mcp_eve = mission control plug-in to do initial exploitation for code execution 
 mcp_sol = mission control plug-in to send stage 1 loader (installer) to devices
 MOP = Mach-O Parser - Python project to parse Mach-O files (soon to be called Apple Binary Parser (ABP) and maintained by HONEYDEW)
 Nandao = privilege escalation (privesc) and sandbox escape for iOS7 and iOS8
-                                                               NightSkies = beacon/implant tool (maintained by AQUARIUS based on the MDB created tool of the same name)
+NightSkies = beacon/implant tool (maintained by AQUARIUS based on the MDB created tool of the same name)
 NightVision = utility to read kernel memory and get/put files as .tbz
 Quaffle = support contract for the Hammer throwing framework
 Redux = close access tool for reading/writing executing files/memory via vpnagent. Should work on iOS up to 8.1.1.
@@ -239,8 +238,6 @@ Local User-to-Root Exploit	BaldEagle - Exploits a vulnerability within the Hardw
 Mesh Networking	SOLDER- DS&T Exploration Fund (EF 1617), A Mesh Networking Development Proposal - DS&T Exploration Fund 2016 (EF1617), A Mesh Networking Development Proposal
 Automated Exploit Idenfication	CRUCIBLE - DS&T Exploration Fund 2016
 
-
-
 CRUCIBLE
 SOLDER- DS&T Exploration Fund (EF 1617), A Mesh Networking Development Proposal
 SnowyOwl
@@ -278,11 +275,13 @@ CutThroat – Virtual machine system apparently for hosting proxy servers to sen
 Bee Sting – iFrame injection technique for HTTP connections
 Sontaran – An attempt to compromise the Siemens OpenStage VoIP phone
 Secret Squirrel (SQRL) – ???
+
 Remote Development Branch
 There isn’t much data on RDB; the only tool listed is for getting at secure databases, so that’s a hint.
 
 Umbrage – This team, among other things, seems to have collected hacker tools and techniques in use around the web, and also sorted through the Hacking Team leak for useful code and documentation — helpful for development or attribution of hacks
 ShoulderSurfer – Tool used to extract data from Microsoft Exchange databases
+
 Operational Support Branch
 In addition to maintaining some useful all-purpose utilities, OSB creates custom solutions for individual operations or assets, with a focus on compromising Windows machines and apps.
 
@@ -302,6 +301,7 @@ Fine Dining – Not software exactly but apparently a menu that operatives can o
 HammerDrill – CD/DVD monitoring tool that also allows files to be compromised as they’re being written to a disc
 Taxman – ???
 HyenasHurdle – ???
+
 Automated Implant Branch
 AIB seems to concern itself with self-running implants. Many of these are not documented or described, but have file lists that reveal a little about their purpose.
 
@@ -317,8 +317,11 @@ CandyMountain – ???
 Hornet – ???
 Cascade – ???
 MagicVikings – ???
+
 Network Devices Branch
-This branch is all about routers and switches, from industrial-level gear to home devices, all of which require device or class-specific exploits and kits. The leaks largely consist of highly technical test results and developer instructions that only hint at the software’s capabilities.
+
+This branch is all about routers and switches, from industrial-level gear to home devices, all of which require device or class-specific exploits and kits.
+The leaks largely consist of highly technical test results and developer instructions that only hint at the software’s capabilities.
 
 Cannoli – Implant for Linksys devices
 WAG200G – Implant installer for Linksys routers that works alongside Cannoli
@@ -337,8 +340,8 @@ HG – Possibly HunGrrr, general-purpose tool for accessing remote networking de
 BuzFuz – ???
 Cytolysis – ???
 Powerman – ???
+
 Non-branch-specific Projects
-These aren’t listed under any specific branch, though some refer to being under the jurisdiction of one or another, or based on a project out of EDB, NDB, etc.
 
 AfterMidnight – Seems to be a Windows privilege escalation scheme that uses one DLL to gain access for another (a “Gremlin”)
 Packrat – Tool for creating and automating listening posts with open-source and commercial software
@@ -369,5 +372,87 @@ AngerQuake (renamed AngerManagement) – Collection of HAMR-related plug-ins for
 Orion – Remote exploit for Android devices
 Freedroid – Privilege escalation tool
 
+VANGUARD - Kernel Exploit (PEKVanguard_x86x64)
+INF - File Install UAC Bypass (PEUSandWorm_x86x64)
+LINKEDIN - User Mode LPE (PEULinkedIn_x86x64)
+LINKEDOUT - User Mode LPE (PEULinkedOut_x86x64)
+CALVARY - UAC Bypass (PEUCalvary_x86x64)
+ARTILLERY - UAC Bypass (PEUArtillery_x86x64)
+GIRAFFE - Link Files (MISCLinkWriter_GRF)
 
+EZCHEESE - Removable Media Link File Execution (EVRemovableMediaLink_EZC)
+LACHESIS - Removable Media Link File Exploitation with Autorun.inf (EVRemovableMediaLink_LACH)
+BOOMSLANG - Link File Execution Utilizing Desktop.ini (EVLink_BOOM)
+RIVERJACK - Link File Execution Utilizing .library-ms (EVLink_RVRJ)
+
+TRICKPLAY - Scheduled Task Persistence (PSEDSchedTask_TP)
+HIGHCLASS - COM + Junction Folder User Persistence (PSDComJunction_HCLS)
+QUICKWORK - Run and RunOnce Registry Key Persistence (PSEDRunKey_QW)
+LEDGER - Group Policy Startup Script (PSEDStartupScript_LDGR)
+SYSTEMUPTIME - WMI Event Persistence (PSEDWMIEvent_SU)
+CONSTANTFLOW - Service Persistence (PSEDService_CF)
+
+AFTERMIDNIGHT - After Midnight
+ANGELFIRE - Angel Fire
+ARCHIMEDES - Archimedes
+ATHENA - Athena
+BOTHANSPY -	Bothan Spy
+BRUTALKANGAROO - Brutal Kangaroo
+CHERRYBLOSSOM - Cherry Blossom
+COUCHPOTATO - Couch Potato
+DARKMATTER - Dark Matter
+DUMBO -	Dumbo
+ELSA - Outlaw Country
+EXPRESSLANE - Express Lane
+GRASSHOPPER - Grasshopper
+HIGHRISE - High Rise
+HIVE - Hive
+IMPERIAL - Imperial
+MARBLE - Marble Framework
+OUTLAWCOUNTRY - Outlaw Country
+PANDEMIC - Pandemic
+PROTEGO - Protego
+SCRIBBLES - Scribbles
+RAYTHEON - UCL:Raytheon
+WEEPINGANGEL - Weeping Angel
+
+SPECKLED - Create Process And Choose A User To Run As Via The Task Scheduler (TaskSchedulerRun_SPKL)
+LEOPARD - Create Process As Current User +Admin (CreateProcessAsUser_LEP)
+GHARIAL - Create Process Using Temp Directory (LoadFromDisk_GHR)
+TIGER - Create Process Using WMI (CreateProcessWMI_TIG)
+SPADEFOOT Create Process (CreateProcess_SPF)
+SHASTA - Create A Process Via COM Class Creation (COMLocalServerRun_SHTA)
+GREENHORN - Create Process And Pipe The Results (CreateProcessPipe_GHRN)
+CHORUS - Create Process Via ShellExecute (ShellExecute_CRS)
+
+Payload Deployment Modules: In-Memory Dll Execution
+
+INTRADERMAL - Load Library From Memory (LoadLibraryFromMemoryJNTD)
+INTRADERMAL - Load ICE Dll In-Memory (LoadICEFromMemoryJNTD)
+INTRADERMAL - Load Fire and Forget Dll In-Memory (LoadFireAndForgetFromMemoryJNTD)
+
+INCEPTION - Inject Dll From Memory Into A Remote Process (lnjectLibraryFromMemory_NCPT)
+FLYPODERMIC - Inject Fire and Forget Dll From Memory Into Remote Process (lnjectFireAndForgetFromMemory_FIYPD)
+HYPODERMIC - Inject Dll From Memory Into A Remote Process (lnjectLibraryFromMemory_FIYPD)
+
+Payload Deployment Modules: On Disk Dll Loading
+
+CAIMAN - Load Library From Disk Using Temp Directory (LoadLibraryFromDisk_CMN)
+GIRAFFE - Link Files (MISCLinkWriter_GRF)
+GLYPH - Data Transfer Via Data File (DTFile_GLPH - GLYPH)
+BRUTALKANGAROO - Transferring Data Using NTFS Alternate Data Streams (DTNtfsAds_BK)
+
+Load Library From Disk - Class Name: LoadLibraryFromDisk
+
+Load EXE From Disk - Class Name:LoadExeFromDisk
+
+Load Library From Memory - Class Name: LoadLibraryFromMemory
+
+Load Fire and Forget Library From Memory - Class Name: LoadFireAndForgetFromMemory
+
+Load ICEv3 Library From Memory - Class Name: LoadICEFromMemory
+
+Inject Library From Memory into a remote process - Class Name: InjectLibraryFromMemory
+
+Inject Fire and Forget Library From Memory into a remote process - Class Name: InjectFireAndForgetFromMemory
 */
