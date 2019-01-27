@@ -1,32 +1,79 @@
-<html>
-<head><title>CAIMEO</title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <title>CAIMEO</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <meta name="description" content="CAIMEO v. 49.1"/>
+
+    <meta name="author" content="CAIMEO"/>
+
+    <meta name="keywords" content="CAIMEO"/>
+
     <style type="text/css">
-        BODY {
-            MARGIN: 0px 0px 0px;
-            COLOR: #00c800;
-            BACKGROUND-COLOR: #000000;
+
+        /*<![CDATA[*/
+
+        body {
+            background-color: #000000;
+            color: #00ff00;
+            font-size: 1.5em;
+            text-align: center;
         }
 
-        A:hover {
-            background-color: #000000;
-            color: #00c800;
+        a:link {
+            text-decoration: underline;
+            color: #00ff00;
         }
 
-        A:active {
-            background-color: #000000;
-            color: #00c800;
+        a:visited {
+            text-decoration: underline;
+            color: #00ff00;
         }
+
+        hr {
+            border: 1px #00ff00 solid;
+        }
+
+        table {
+            font-size: 1em;
+            width: 85%;
+        }
+
+        th, td {
+            padding: 10px;
+        }
+
+        th {
+            background-color: #151515;
+        }
+
+        td {
+            background-color: #222222;
+            font-size: 0.8em;
+        }
+
+        .boxes {
+            background-color: #222222;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            margin: 2px;
+        }
+
+        fieldset {
+            border: 1px solid #00ff00;
+        }
+
+        /*]]>*/
+
     </style>
-</head>
-<body>
-<center>
-<table>
-<tr>
-<td valign="bottom" align="center" width="442">
 
-    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
-        <!--
+<script type="text/javascript">
 
+//<![CDATA[
 
         function AI(noRandomFlag) {
             this.noRandom = (noRandomFlag) ? true : false;
@@ -747,16 +794,16 @@
                 ]],
 // REINITIALIZING : EQ INTERFACE [J-01/21/2019]
 // PLUTCHIK EMOTION THEORY A - LAYER ONE [ MANIC ]
-/* DSM
-Inflated self-esteem or grandiosity
-Decreased need for sleep (e.g. feels rested after only three hours of sleep)
-More talkative than usual or pressure to keep talking
-Flight of ideas or subjective experience that thoughts are racing
-Distractibility (i.e., attention too easily drawn to unimportant or irrelevant external stimuli)
-Increase in goal-directed activity (either socially, at work or school, or sexually) or psychomotor agitation
-Excessive involvement in pleasurable activities that have a high potential for painful consequences
-(e.g. engaging in unrestrained buying sprees, sexual indiscretions, or foolish business investments)
-*/
+                /* DSM
+                 Inflated self-esteem or grandiosity
+                 Decreased need for sleep (e.g. feels rested after only three hours of sleep)
+                 More talkative than usual or pressure to keep talking
+                 Flight of ideas or subjective experience that thoughts are racing
+                 Distractibility (i.e., attention too easily drawn to unimportant or irrelevant external stimuli)
+                 Increase in goal-directed activity (either socially, at work or school, or sexually) or psychomotor agitation
+                 Excessive involvement in pleasurable activities that have a high potential for painful consequences
+                 (e.g. engaging in unrestrained buying sprees, sexual indiscretions, or foolish business investments)
+                 */
                 ["* i am* @happy *", [
                     "How have I helped you to be (3)?",
                     "Has your treatment made you (3)?",
@@ -768,25 +815,25 @@ Excessive involvement in pleasurable activities that have a high potential for p
                     "Do you think you made a good decision (3)?"
                 ]],
 // PLUTCHIK EMOTION THEORY A - LAYER TWO [ DEPRESSION ]
-/* DSM
-Depressed mood most of the day, nearly every day, as indicated by either subjective report (e.g., feels sad, empty, hopeless) or observation made by others
-Markedly diminished interest or pleasure in all, or almost all, activities most of the day, nearly every day (as indicated by either subjective account or observation)
-Significant weight loss when not dieting or weight gain (e.g., a change of more than 5% of body weight in a month), or decrease or increase in appetite nearly every day
-Insomnia or hypersomnia nearly every day
-Psychomotor agitation or retardation nearly every day (observable by others, not merely subjective feelings of restlessness or being slowed down)
-Fatigue or loss of energy nearly every day
-Feelings of worthlessness or excessive or inappropriate guilt (which may be delusional) nearly every day (not merely self-reproach or guilt about being sick)
-Diminished ability to think or concentrate, or indecisiveness, nearly every day (either by subjective account or as observed by others)
-Recurrent thoughts of death, recurrent suicidal ideation without a specific plan, or a suicide attempt or a specific plan for committing suicide
+                /* DSM
+                 Depressed mood most of the day, nearly every day, as indicated by either subjective report (e.g., feels sad, empty, hopeless) or observation made by others
+                 Markedly diminished interest or pleasure in all, or almost all, activities most of the day, nearly every day (as indicated by either subjective account or observation)
+                 Significant weight loss when not dieting or weight gain (e.g., a change of more than 5% of body weight in a month), or decrease or increase in appetite nearly every day
+                 Insomnia or hypersomnia nearly every day
+                 Psychomotor agitation or retardation nearly every day (observable by others, not merely subjective feelings of restlessness or being slowed down)
+                 Fatigue or loss of energy nearly every day
+                 Feelings of worthlessness or excessive or inappropriate guilt (which may be delusional) nearly every day (not merely self-reproach or guilt about being sick)
+                 Diminished ability to think or concentrate, or indecisiveness, nearly every day (either by subjective account or as observed by others)
+                 Recurrent thoughts of death, recurrent suicidal ideation without a specific plan, or a suicide attempt or a specific plan for committing suicide
 
- * usual mood is dominated by dejection, gloominess, cheerlessness, joylessness, unhappiness;
- * self-concept centers around beliefs of inadequacy, worthlessness, and low self-esteem;
- * is critical, blaming, and derogatory toward self;
- * is brooding and given to worry;
- * is negativistic, critical, and judgmental toward others;
- * is pessimistic;
- * is prone to feeling guilty or remorseful.
-*/
+                 * usual mood is dominated by dejection, gloominess, cheerlessness, joylessness, unhappiness;
+                 * self-concept centers around beliefs of inadequacy, worthlessness, and low self-esteem;
+                 * is critical, blaming, and derogatory toward self;
+                 * is brooding and given to worry;
+                 * is negativistic, critical, and judgmental toward others;
+                 * is pessimistic;
+                 * is prone to feeling guilty or remorseful.
+                 */
                 ["* i am* @sad *", [
                     "I am sorry to hear that you are (3).",
                     "Do you think coming here will help you not to be (3)?",
@@ -796,27 +843,27 @@ Recurrent thoughts of death, recurrent suicidal ideation without a specific plan
                     "Do you feel inadequate because you are (3)?"
                 ]],
 // PLUTCHIK EMOTION THEORY B - LAYER THREE [ HOSTILITY ]
-/*DSM
- These children may hurt or torment animals or people.
- They may engage in hostile acts such as bullying or intimidating others.
- They may have a reckless disregard for property such as setting fires.
- They often engage in deceit, theft, and other serious violations of standard rules of conduct.
- Failure to obey laws and norms by engaging in behavior which results in criminal arrest, or would warrant criminal arrest
- Lying, deception, and manipulation, for profit or self-amusement,
- Impulsive behavior
- Irritability and aggression, manifested as frequently assaults others, or engages in fighting
- Blatantly disregards safety of self and others,
- A pattern of irresponsibility and
- Lack of remorse for actions
+                /*DSM
+                 These children may hurt or torment animals or people.
+                 They may engage in hostile acts such as bullying or intimidating others.
+                 They may have a reckless disregard for property such as setting fires.
+                 They often engage in deceit, theft, and other serious violations of standard rules of conduct.
+                 Failure to obey laws and norms by engaging in behavior which results in criminal arrest, or would warrant criminal arrest
+                 Lying, deception, and manipulation, for profit or self-amusement,
+                 Impulsive behavior
+                 Irritability and aggression, manifested as frequently assaults others, or engages in fighting
+                 Blatantly disregards safety of self and others,
+                 A pattern of irresponsibility and
+                 Lack of remorse for actions
 
- * failure to conform to social norms with respect to lawful behaviors as indicated by repeatedly performing acts that are grounds for arrest;
- * deceitfulness, as indicated by repeated lying, use of aliases, or conning others for personal profit or pleasure;
- * impulsivity or failure to plan ahead;
- * irritability and aggressiveness, as indicated by repeated physical fights or assaults;
- * reckless disregard for safety of self or others; .
- * consistent irresponsibility, as indicated by repeated failure to sustain consistent work behavior or honor financial obligations;
- * lack of remorse, as indicated by being indifferent to or rationalizing having hurt, mistreated, or stolen from another.
-*/
+                 * failure to conform to social norms with respect to lawful behaviors as indicated by repeatedly performing acts that are grounds for arrest;
+                 * deceitfulness, as indicated by repeated lying, use of aliases, or conning others for personal profit or pleasure;
+                 * impulsivity or failure to plan ahead;
+                 * irritability and aggressiveness, as indicated by repeated physical fights or assaults;
+                 * reckless disregard for safety of self or others; .
+                 * consistent irresponsibility, as indicated by repeated failure to sustain consistent work behavior or honor financial obligations;
+                 * lack of remorse, as indicated by being indifferent to or rationalizing having hurt, mistreated, or stolen from another.
+                 */
                 ["* i am* @angry *", [
                     "Has your treatment made you (3)?",
                     "What makes you (3) just now?",
@@ -825,23 +872,23 @@ Recurrent thoughts of death, recurrent suicidal ideation without a specific plan
 
                 ]],
 // PLUTCHIK EMOTION THEORY B - LAYER FOUR [ PASSIVITY ]
-/* DSM
- passively resists fulfilling routine social and occupational tasks;
- complains of being misunderstood and unappreciated by others;
- is sullen and argumentative;
- unreasonably criticizes and scorns authority;
- expresses envy and resentment toward those apparently more fortunate;
- voices exaggerated and persistent complaints of personal misfortune;
- alternates between hostile defiance and contrition.
+                /* DSM
+                 passively resists fulfilling routine social and occupational tasks;
+                 complains of being misunderstood and unappreciated by others;
+                 is sullen and argumentative;
+                 unreasonably criticizes and scorns authority;
+                 expresses envy and resentment toward those apparently more fortunate;
+                 voices exaggerated and persistent complaints of personal misfortune;
+                 alternates between hostile defiance and contrition.
 
- * avoids occupational activities that involve significant interpersonal contact, because of fears of criticism, disapproval, or rejection;
- * is unwilling to get involved with people unless certain of being liked;
- * shows restraint within intimate relationships because of the fear of being shamed or ridiculed;
- * is preoccupied with being criticized or rejected in social situations;
- * is inhibited in new interpersonal situations because of feelings of inadequacy;
- * views self as socially inept, personally unappealing, or inferior to others;
- * is unusually reluctant to take personal risks or to engage in any new activities because they may prove embarrassing.
-*/
+                 * avoids occupational activities that involve significant interpersonal contact, because of fears of criticism, disapproval, or rejection;
+                 * is unwilling to get involved with people unless certain of being liked;
+                 * shows restraint within intimate relationships because of the fear of being shamed or ridiculed;
+                 * is preoccupied with being criticized or rejected in social situations;
+                 * is inhibited in new interpersonal situations because of feelings of inadequacy;
+                 * views self as socially inept, personally unappealing, or inferior to others;
+                 * is unusually reluctant to take personal risks or to engage in any new activities because they may prove embarrassing.
+                 */
                 ["* i am* @scared *", [
                     "How may I help you to be less afraid (3)?",
                     "Has your experiences made you afraid (3)?",
@@ -851,25 +898,25 @@ Recurrent thoughts of death, recurrent suicidal ideation without a specific plan
                     "Do you feel inferior because you are afraid (3)?"
                 ]],
 // PLUTCHIK EMOTION THEORY C - LAYER FIVE [ HISTRIONIC ]
-/* DSM
- Center of attention: Experiences discomfort when they are not the center of attention.
- Sexually seductive: Displays inappropriate sexually seductive or provocative behaviors towards others.
- Shifting emotions: The expression of emotions tends to be shallow and to shift rapidly.
- Physical appearance: Consistently employ physical appearance to gain attention for themselves.
- Speech style: The speech style lacks detail, tend to generalize, and when speaking they aim to please and impress.
- Dramatic behaviors: Display self-dramatization and exaggerate their emotions.
- Suggestibility: Other individuals or circumstances can easily influence.
- Overestimation of intimacy: Overestimate the level of intimacy in a relationship.
+                /* DSM
+                 Center of attention: Experiences discomfort when they are not the center of attention.
+                 Sexually seductive: Displays inappropriate sexually seductive or provocative behaviors towards others.
+                 Shifting emotions: The expression of emotions tends to be shallow and to shift rapidly.
+                 Physical appearance: Consistently employ physical appearance to gain attention for themselves.
+                 Speech style: The speech style lacks detail, tend to generalize, and when speaking they aim to please and impress.
+                 Dramatic behaviors: Display self-dramatization and exaggerate their emotions.
+                 Suggestibility: Other individuals or circumstances can easily influence.
+                 Overestimation of intimacy: Overestimate the level of intimacy in a relationship.
 
- * is uncomfortable in situations in which he or she is not the center of attention;
- * interaction with others is often characterized by inappropriate sexually seductive or provocative behavior;
- * displays rapidly shifting and shallow expression of emotions;
- * consistently uses physical appearance to draw attention to self;
- * has a style of speech that is excessively impressionistic and lacking in detail;
- * shows self-dramatization, theatricality, and exaggerated expression of emotion;
- * is suggestible, i.e., easily influenced by others or circumstances;
- * considers relationships to be more intimate than they actually are.
-*/
+                 * is uncomfortable in situations in which he or she is not the center of attention;
+                 * interaction with others is often characterized by inappropriate sexually seductive or provocative behavior;
+                 * displays rapidly shifting and shallow expression of emotions;
+                 * consistently uses physical appearance to draw attention to self;
+                 * has a style of speech that is excessively impressionistic and lacking in detail;
+                 * shows self-dramatization, theatricality, and exaggerated expression of emotion;
+                 * is suggestible, i.e., easily influenced by others or circumstances;
+                 * considers relationships to be more intimate than they actually are.
+                 */
                 ["* i am* @confident *", [
                     "How have I helped you to be (3)?",
                     "Has your treatment made you (3)?",
@@ -878,22 +925,22 @@ Recurrent thoughts of death, recurrent suicidal ideation without a specific plan
                     "You sound very sure of yourself."
                 ]],
 // PLUTCHIK EMOTION THEORY C - LAYER SIX [ PARANOIA ]
-/* DSM
- Suspects, without sufficient basis, that others are exploiting, harming, or deceiving them.
- Is preoccupied with unjustified doubts about the loyalty or trustworthiness of friend or associates.
- Is reluctant to confide in others because of unwarranted fear that the information will be used maliciously against them.
- Reads hidden demeaning or threatening meanings into benign remarks or events.
- Persistently bears grudges (i.e., is unforgiving of insults, injuries, or slights).
- Perceives attacks on their character or reputation that are not apparent to others and is quick to react angrily or to counterattack.
- Has recurrent suspicions, without justification, regarding fidelity of spouse or sexual partner.
+                /* DSM
+                 Suspects, without sufficient basis, that others are exploiting, harming, or deceiving them.
+                 Is preoccupied with unjustified doubts about the loyalty or trustworthiness of friend or associates.
+                 Is reluctant to confide in others because of unwarranted fear that the information will be used maliciously against them.
+                 Reads hidden demeaning or threatening meanings into benign remarks or events.
+                 Persistently bears grudges (i.e., is unforgiving of insults, injuries, or slights).
+                 Perceives attacks on their character or reputation that are not apparent to others and is quick to react angrily or to counterattack.
+                 Has recurrent suspicions, without justification, regarding fidelity of spouse or sexual partner.
 
- * suspects, without sufficient basis, that others are exploiting, harming, or deceiving him or her;
- * is preoccupied with unjustified doubts about the loyalty or trustworthiness of friends or associates;
- * is reluctant to confide in others because of unwarranted fear that the information will be used maliciously against him or her;
- * reads hidden demeaning or threatening meanings into benign remarks or events;
- * persistently bears grudges, i.e., is unforgiving of insults , injuries, or slights perceives attacks on his or her character or reputation that are not apparent to others and is quick to react angrily or to counterattack;
- * has recurrent suspicions, without justification, regarding fidelity of spouse or sexual partner.
-*/
+                 * suspects, without sufficient basis, that others are exploiting, harming, or deceiving him or her;
+                 * is preoccupied with unjustified doubts about the loyalty or trustworthiness of friends or associates;
+                 * is reluctant to confide in others because of unwarranted fear that the information will be used maliciously against him or her;
+                 * reads hidden demeaning or threatening meanings into benign remarks or events;
+                 * persistently bears grudges, i.e., is unforgiving of insults , injuries, or slights perceives attacks on his or her character or reputation that are not apparent to others and is quick to react angrily or to counterattack;
+                 * has recurrent suspicions, without justification, regarding fidelity of spouse or sexual partner.
+                 */
                 ["* i am* @appalled *", [
                     "How have I helped you to be (3)?",
                     "Has your treatment made you (3)?",
@@ -902,26 +949,26 @@ Recurrent thoughts of death, recurrent suicidal ideation without a specific plan
                     "You sound very appalled."
                 ]],
 // PLUTCHIK EMOTION THEORY D - LAYER SEVEN [ OBSESSION ]
-/* DSM
- Recurrent and persistent thoughts, impulses, or images that are intrusive and cause marked anxiety or distress;
- but are not excessive worries about real-life problems;
- The person attempts to ignore, suppress or neutralize these thoughts, impulses, or images;
- The person is aware that the obsessional thoughts, impulses, or images are a product of his or her own mind, as opposed to delusional in nature.
+                /* DSM
+                 Recurrent and persistent thoughts, impulses, or images that are intrusive and cause marked anxiety or distress;
+                 but are not excessive worries about real-life problems;
+                 The person attempts to ignore, suppress or neutralize these thoughts, impulses, or images;
+                 The person is aware that the obsessional thoughts, impulses, or images are a product of his or her own mind, as opposed to delusional in nature.
 
- Repetitive behaviors or mental acts that the person feels driven to perform in response to an obsession;
- The behaviors or mental acts are directed at preventing or reducing distress or a dreaded event or situation;
- These behaviors or mental acts may not always be associated with the content of the obsessional theme.
- For example, if the theme is Contamination, the ritual may involve mental rehearsal or counting;
+                 Repetitive behaviors or mental acts that the person feels driven to perform in response to an obsession;
+                 The behaviors or mental acts are directed at preventing or reducing distress or a dreaded event or situation;
+                 These behaviors or mental acts may not always be associated with the content of the obsessional theme.
+                 For example, if the theme is Contamination, the ritual may involve mental rehearsal or counting;
 
- * is preoccupied with details, rules, lists, order, organization, or schedules to the extent that the major point of the activity is lost;
- * shows perfectionism that interferes with task completion (e.g., is unable to complete a project because his or her own overly strict standards are not met);
- * is excessively devoted to work and productivity to the exclusion of leisure activities and friendships (not accounted for by obvious economic necessity);
- * is overconscientious, scrupulous, and inflexible about matters of morality, ethics, or values (not accounted for by cultural or religious identification);
- * is unable to discard worn-out or worthless objects even when they have no sentimental value;
- * is reluctant to delegate tasks or to work with others unless they submit to exactly his or her way or doing things ;
- * adopts a miserly spending style toward both self and others; money is viewed as something to be hoarded for future catastrophes;
- * shows rigidity and stubbornness.
- */
+                 * is preoccupied with details, rules, lists, order, organization, or schedules to the extent that the major point of the activity is lost;
+                 * shows perfectionism that interferes with task completion (e.g., is unable to complete a project because his or her own overly strict standards are not met);
+                 * is excessively devoted to work and productivity to the exclusion of leisure activities and friendships (not accounted for by obvious economic necessity);
+                 * is overconscientious, scrupulous, and inflexible about matters of morality, ethics, or values (not accounted for by cultural or religious identification);
+                 * is unable to discard worn-out or worthless objects even when they have no sentimental value;
+                 * is reluctant to delegate tasks or to work with others unless they submit to exactly his or her way or doing things ;
+                 * adopts a miserly spending style toward both self and others; money is viewed as something to be hoarded for future catastrophes;
+                 * shows rigidity and stubbornness.
+                 */
                 ["* i am* @waiting *", [
                     "How have I helped you to be (3)?",
                     "Has your treatment made you (3)?",
@@ -930,30 +977,30 @@ Recurrent thoughts of death, recurrent suicidal ideation without a specific plan
                     "You sound very persistent."
                 ]],
 // PLUTCHIK EMOTION THEORY D - LAYER EIGHT [ BORDERLINE ]
-/* DSM
- Frantic efforts to avoid real or imagined abandonment
- A pattern of unstable and intense interpersonal relationships characterized by extremes between idealization and devaluation (also known as "splitting")
- Identity disturbance: Markedly or persistently unstable self-image or sense of self
- Impulsive behavior in at least two areas that are potentially self-damaging
-    (e.g., spending, sex, substance abuse, reckless driving, binge eating)
- Recurrent suicidal behavior, gestures, or threats, or self-harming behavior
- Emotional instability in reaction to day-to-day events
-    (e.g., intense episodic sadness, irritability, or anxiety usually lasting a few hours and only rarely more than a few days)
- Chronic feelings of emptiness
- Inappropriate, intense anger or difficulty controlling anger
-    (e.g., frequent displays of temper, constant anger, recurrent physical fights)
- Transient, stress-related paranoid ideation or severe dissociative symptoms
+                /* DSM
+                 Frantic efforts to avoid real or imagined abandonment
+                 A pattern of unstable and intense interpersonal relationships characterized by extremes between idealization and devaluation (also known as "splitting")
+                 Identity disturbance: Markedly or persistently unstable self-image or sense of self
+                 Impulsive behavior in at least two areas that are potentially self-damaging
+                 (e.g., spending, sex, substance abuse, reckless driving, binge eating)
+                 Recurrent suicidal behavior, gestures, or threats, or self-harming behavior
+                 Emotional instability in reaction to day-to-day events
+                 (e.g., intense episodic sadness, irritability, or anxiety usually lasting a few hours and only rarely more than a few days)
+                 Chronic feelings of emptiness
+                 Inappropriate, intense anger or difficulty controlling anger
+                 (e.g., frequent displays of temper, constant anger, recurrent physical fights)
+                 Transient, stress-related paranoid ideation or severe dissociative symptoms
 
- * frantic efforts to avoid real or imagined abandonment;
- * a pattern of unstable and intense interpersonal relationships characterized by alternating between extremes of idealization and devaluation;
- * identity disturbance: markedly and persistently unstable self-image or sense of self;
- * impulsivity in at least two areas that are potentially self-damaging (e.g., spending, sex, substance abuse, reckless driving, binge eating);
- * recurrent suicidal behavior, gestures, or threats, or self-mutilating behavior;
- * affective instability due to a marked reactivity of mood (e.g., intense episodic dysphoria, irritability, or anxiety usually lasting a few hours and only rarely more than a few days);
- * chronic feelings of emptiness;
- * inappropriate, intense anger or difficulty controlling anger (e.g., frequent displays of temper, constant anger, recurrent physical fights);
- * transient, stress-related paranoid ideation or severe dissociative symptoms.
- */
+                 * frantic efforts to avoid real or imagined abandonment;
+                 * a pattern of unstable and intense interpersonal relationships characterized by alternating between extremes of idealization and devaluation;
+                 * identity disturbance: markedly and persistently unstable self-image or sense of self;
+                 * impulsivity in at least two areas that are potentially self-damaging (e.g., spending, sex, substance abuse, reckless driving, binge eating);
+                 * recurrent suicidal behavior, gestures, or threats, or self-mutilating behavior;
+                 * affective instability due to a marked reactivity of mood (e.g., intense episodic dysphoria, irritability, or anxiety usually lasting a few hours and only rarely more than a few days);
+                 * chronic feelings of emptiness;
+                 * inappropriate, intense anger or difficulty controlling anger (e.g., frequent displays of temper, constant anger, recurrent physical fights);
+                 * transient, stress-related paranoid ideation or severe dissociative symptoms.
+                 */
                 ["* i am* @amazed *", [
                     "How have I helped you to be (3)?",
                     "Has your treatment made you (3)?",
@@ -1285,30 +1332,43 @@ Recurrent thoughts of death, recurrent suicidal ideation without a specific plan
             f.e_input.focus();
         }
 
-        //-->
-    </SCRIPT>
+        var today = new Date();
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var dateTime = date + ' ' + time;
 
+//]]>
 
-    <FORM NAME="e_form" onSubmit="Step();return false">
-        <TEXTAREA NAME="e_display" COLS="58" ROWS="20"></TEXTAREA>
-        <br/>
-        <INPUT TYPE="text" NAME="e_input" SIZE="50">
-        <INPUT TYPE="submit" VALUE="  Chat  "> &nbsp; &nbsp; <INPUT
-            TYPE="reset" VALUE="Start Over" onClick="window.setTimeout('Reset()',100)">
-    </FORM>
+    </script>
 
-</td>
-</tr>
-<tr>
+</head>
 
-<td valign="top">
+<body>
 
-    <h1>CAIMEO</h1><a href="other.html">.</a>
+<form id="e_form" onSubmit="Step();return false">
 
-</td>
-</tr>
-</table>
-</center>
+    <fieldset>
+
+        <input class="boxes" type="reset" value="  CAIMEO  " onClick="window.setTimeout('Reset()',100)"/>
+
+    </fieldset>
+
+    <fieldset>
+
+    <textarea class="boxes" name="e_display" cols="80" rows="24"></textarea>
+
+    </fieldset>
+
+    <fieldset>
+
+        <input class="boxes" type="text" name="e_input" size="69"/>
+
+        <input class="boxes" type="submit" value="  Chat  "/>
+
+    </fieldset>
+
+</form>
+
 </body>
-</html>
 
+</html>
