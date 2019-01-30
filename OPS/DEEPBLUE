@@ -1,1 +1,76 @@
+/*
 # DEEPBLUE
+*/
+
+/*
+Tool type	Tool name	CVE	Protection Name
+Reconnaissance	SMBtouch
+ArchiTouch
+
+Microsoft Windows SMBTouch Scanner
+Microsoft Windows ArchiTouch SMB Scanner
+
+Exploitation	EternalBlue
+EternalChampion
+
+EternalSynergy
+
+EternalRomance
+
+EsteemAudit
+
+Eclipsedwing
+
+EBBISLAND aka EBBSHAVE
+
+MS17-10(CVE-2017-0143)
+MS17-10(CVE-2017-0144)
+
+MS17-10(CVE-2017-0145)
+
+MS17-10(CVE-2017-0146)
+
+MS17-10(CVE-2017-0147)
+
+MS17-10(CVE-2017-0148)
+
+CVE-2017-3623
+
+CVE-2017-9073
+
+MS08-067(CVE-2008-4250)
+
+Microsoft Windows NT Null CIFS Sessions
+Repetitive SMB Rename Command Attempts
+
+Ransomware Shared Folder Access
+
+Microsoft Windows SMB Remote Code Execution (MS17-010: CVE-2017-0143)
+
+Microsoft Windows SMB Remote Code Execution (MS17-010: CVE-2017-0144)
+
+Microsoft Windows SMB Remote Code Execution (MS17-010: CVE-2017-0145)
+
+Microsoft Windows SMB Remote Code Execution (MS17-010: CVE-2017-0146)
+
+Microsoft Windows SMB Information Disclosure (MS17-010: CVE-2017-0147)
+
+Microsoft Windows SMB Remote Code Execution (MS17-010: CVE-2017-0148)
+
+Microsoft Windows EternalBlue SMB Remote Code Execution
+
+Microsoft Windows EternalChampion SMB Remote Code Execution
+
+Microsoft Windows EternalSynergy SMB Remote Code Execution
+
+Microsoft Windows EternalRomance SMB Remote Code Execution
+
+Oracle Solaris Remote Shell Code Execution (CVE-2017-3623)
+
+Microsoft Windows EsteemAudit RDP Remote Code Execution
+
+Microsoft Windows Eclipsedwing RPC Buffer Overflow
+
+Backdoor	DoublePulsar		Microsoft Windows DoublePulsar SMB Remote Code Execution
+
+*/
