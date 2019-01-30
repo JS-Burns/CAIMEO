@@ -1,0 +1,1414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ # BADTOUCH v. 49.2.16
+
+        Reconnaissance tool scans the targets before the attack is launched, and later attaches a detailed report on the target.
+        The tool collects its info using legitimate messages which provide relevant Information about the victim machines.
+        For example, extracting the Native OS Version using the SMB_COM_SESSION_SETUP_ANDX (0x73) command
+        BADTOUCH initiates a session which forces the infected server to disclose OS information.
+        Upon finding a vulnerable OS, BADTOUCH proceeds to check the permissions it is granted by the OS.
+        BADTOUCH then reports what vulnerabilities are present in the system.
+        This is a familiar procedure in accordance with how exploit kits detect web-browser plugins to analyze vulnerabilities.
+        The information provided by BADTOUCH is used to serve a suitable exploit.
+
+        * VI. VERSION INDEX
+        *  1. Architouch-1.0.0.0.xml
+        *  2. Domaintouch-1.1.1.0.xml
+        *  3. Eclipsedwingtouch-1.0.4.0.xml
+        *  4. Educatedscholartouch-1.0.0.0.xml
+        *  5. Emeraldthreadtouch-1.0.0.0.xml
+        *  6. Erraticgophertouch-1.0.1.0.xml
+        *  7. Esteemaudittouch-2.1.0.0.xml
+        *  8. Explodingcantouch-1.2.1.0.xml
+        *  9. Iistouch-1.2.2.0.xml
+        * 10. Namedpipetouch-2.0.0.0.xml
+        * 11. Printjobdelete-1.0.0.0.xml
+        * 12. Printjoblist-1.0.0.0.xml
+        * 13. Rpctouch-2.1.0.0.xml
+        * 14. Smbtouch-1.1.1.0.xml
+        * 15. Webadmintouch-1.0.1.0.xml
+        * 16. Worldclienttouch-1.0.1.0.xml
+
+/*
+ # ARCHITOUCH
+*/
+-->
+<config xmlns="urn:trch"
+        id="5f75119c8cc493e28286b5315d05d79bfc50b039"
+        name="Architouch"
+        version="1.0.0"
+        configversion="1.0.0.0"
+        schemaversion="2.0.0">
+    <inputparameters>
+        <!-- All plugins that perform blocking network calls must have a NetworkTimeout
+             parameter or its equivalent -->
+        <parameter name="NetworkTimeout"
+                   description="Timeout for blocking network calls (in seconds).  Use -1 for no timeout."
+                   type="S16">
+            <default>60</default>
+        </parameter>
+        <parameter name="TargetIp"
+                   description="Target IP Address"
+                   type="IPv4"/>
+        <parameter name="TargetPort"
+                   description="Port used by a TCP RPC service"
+                   type="TcpPort">
+            <default>49152</default>
+        </parameter>
+    </inputparameters>
+
+    <outputparameters>
+        <parameter name="TargetOsArchitecture" description="Target architecture" type="String"/>
+    </outputparameters>
+
+    <errors>
+        <errorcode name="ARTO_NETWORK_ERROR" value="65"
+                   description="A network error occured"/>
+    </errors>
+
+    <redirection>
+        <local protocol="TCP"
+               listenaddr="TargetIp"
+               listenport="TargetPort"
+               destaddr="TargetIp"
+               destport="TargetPort"
+               closeoncompletion="true"/>
+    </redirection>
+
+    <logic>
+    </logic>
+</config>
+        <!--
+                /*
+                # DOMAINTOUCH
+                */
+        -->
+<t:config id="19e475ba095c90e14ea158179b5b284d6e63bba3"
+          name="Domaintouch"
+          version="1.1.1"
+          configversion="1.1.1.0"
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:t='tc0'>
+
+<t:inputparameters>
+    <t:parameter name="NetworkTimeout"
+                 description="Timeout for blocking network calls (in seconds)"
+                 type="S16"
+                 default="60"/>
+    <t:parameter name="TargetIp"
+                 description="Domain Controller's IP address"
+                 type="IPv4"
+                 binding="//identifier"/>
+    <t:parameter name="TargetPort"
+                 description="Port used by the netlogon service"
+                 type="TcpPort"
+                 binding="//service[name='smb']/port"
+                 default="445"/>
+
+    <t:paramchoice name="CredentialType"
+                   description="Password, password hash, ticket, etc"
+                   default="Ticket">
+
+        <t:paramgroup name="UnicodeCreds"
+                      description="Unicode encoded credentials">
+            <t:parameter name="Username"
+                         description="Username entered as hex bytes (in Unicode)"
+                         type="UString"/>
+            <t:parameter name="Credential"
+                         description="Unicode password entered as hex bytes (in Unicode)"
+                         type="UString"/>
+        </t:paramgroup>
+        <t:paramgroup name="MachineHash"
+                      description="Machine credentials, obtained from LSADump">
+            <t:parameter name="Username"
+                         description="Machine name, including the '$' character, in UNICODE"
+                         type="UString"/>
+            <t:parameter name="Credential"
+                         description="Hash of machine password entered as HEX BYTES.  This can be obtained from lsadump"
+                         type="UString"/>
+        </t:paramgroup>
+        <t:paramgroup name="PasswordHash"
+                      description="Password hash">
+            <t:parameter name="Username"
+                         description="Username in Unicode"
+                         type="UString"/>
+            <t:parameter name="Credential"
+                         description="User password entered as HEX BYTES. This can be obtained from lsadump"
+                         type="UString"/>
+        </t:paramgroup>
+
+
+    </t:paramchoice>
+</t:inputparameters>
+
+<t:outputparameters>
+    <t:parameter name="CredentialType"
+                 description="CredentialType used by this plugin"
+                 type="String"/>
+    <t:parameter name="Username"
+                 description="Username used by this plugin"
+                 type="UString"/>
+    <t:parameter name="Credential"
+                 description="Credential used by this plugin"
+                 type="UString"/>
+    <t:parameter name="DomainNetbios"
+                 description="Target domain NetBIOS name (in Unicode)"
+                 type="UString"/>
+    <t:parameter name="DomainDns"
+                 description="Target domain DNS name (in Unicode)"
+                 type="UString"/>
+    <t:parameter name="DomainSid"
+                 description="Target domain SID"
+                 type="String"/>
+    <t:parameter name="DomainGuid"
+                 description="Target domain GUID"
+                 type="String"/>
+</t:outputparameters>
+
+<t:redirection>
+    <t:local protocol="TCP"
+             listenaddr="TargetIp"
+             listenport="TargetPort"
+             destaddr="//identifier"
+             destport="//service[name='smb']/port"
+             closeoncompletion="true"/>
+</t:redirection>
+
+<t:logic>
+    <t:or>
+        <t:os family="windows" name="Windows 2000"/>
+        <t:os family="windows" name="Windows XP"/>
+        <t:os family="windows" name="Windows 2003"/>
+        <t:os family="windows" name="Windows 2003 R2"/>
+        <t:os family="windows" name="Windows Vista"/>
+        <t:os family="windows" name="Windows 2008"/>
+        <t:os family="windows" name="Windows 7"/>
+        <t:os family="windows" name="Windows 2008 R2"/>
+    </t:or>
+</t:logic>
+</t:config>
+        <!--
+                /*
+                # ECLIPSEDWINGTOUCH
+                */
+        -->
+<t:config id="04b6895e13883c32fe5575de1e666145cf149b7f"
+          name="Eclipsedwingtouch"
+          version="1.0.4"
+          configversion="1.0.4.0"
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:t='tc0'>
+
+<t:inputparameters>
+    <t:parameter name="TargetIp"
+                 description="Target IP Address"
+                 type="IPv4"
+                 binding="//identifier"/>
+    <t:parameter name="TargetPort"
+                 description="Port used by SMB or NBT"
+                 type="TcpPort"/>
+    <t:parameter name="ServerName"
+                 description="Server Name"
+                 type="String"
+                 value="*SMBSERVER"
+                 hidden="true"/>
+    <t:parameter name="ClientName"
+                 description="Client Name"
+                 type="String"
+                 value="*SMBCLIENT"
+                 hidden="true"/>
+
+    <t:paramchoice name="Protocol" description="Protocol to connect to target with">
+        <t:paramgroup name="SMB" description="SMB over TCP (port 445)"/>
+        <t:paramgroup name="NBT" description="Netbios over TCP (port 139)"/>
+    </t:paramchoice>
+    <t:parameter name="NetworkTimeout"
+                 description="Timeout for blocking network calls (in seconds).  Use -1 for no timeout."
+                 type="S16"
+                 default="60"/>
+</t:inputparameters>
+
+<t:outputparameters>
+    <t:parameter name="Contract"
+                 description="The contract fulfilled by this plugin"
+                 type="String"
+                 value="VulnScan"/>
+    <t:parameter name="OsPatch"
+                 description=""
+                 type="String"
+                 required="false"/>
+</t:outputparameters>
+
+<t:redirection>
+    <t:local protocol="TCP"
+             listenaddr="TargetIp"
+             listenport="TargetPort"
+             destaddr="//identifier"
+             destport="TargetPort"
+             closeoncompletion="true"/>
+</t:redirection>
+<t:logic>
+    <t:or>
+        <t:service name="smb">
+            <t:bindtovalue name="Protocol" value="SMB"/>
+            <t:bindtopath name="TargetPort" path="//service[name='smb']/port"/>
+        </t:service>
+        <t:service name="nbt">
+            <t:bindtovalue name="Protocol" value="NBT"/>
+            <t:bindtopath name="TargetPort" path="//service[name='nbt']/port"/>
+        </t:service>
+    </t:or>
+</t:logic>
+</t:config>
+        <!--
+                / *
+                # EDUCATEDSCHOLARTOUCH
+                */
+        -->
+<t:config id="d0178d92d73ae8348f7ca99bf78c110e8ba8bf1d"
+          name="Educatedscholartouch"
+          version="1.0.0"
+          configversion="1.0.0.0"
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:t='tc0'>
+<t:inputparameters>
+    <t:parameter name="TargetIp"
+                 description="Target IP Address"
+                 type="IPv4"
+                 binding="//identifier"/>
+    <t:parameter name="TargetPort"
+                 description="Port used by SMB"
+                 type="TcpPort"
+                 binding="//service[name='smb']/port"/>
+    <t:parameter name="NetworkTimeout"
+                 description="Timeout for blocking network calls (in seconds).  Use -1 for no timeout."
+                 type="S16"
+                 default="60"/>
+    <t:parameter name="ProcessIDHigh" description="" type="U16"
+                 value="0x03F" hidden="true"/>
+
+</t:inputparameters>
+<t:outputparameters>
+    <t:parameter name="Contract"
+                 description="The contract fulfilled by this plugin"
+                 type="String"
+                 value="Touch"/>
+
+</t:outputparameters>
+<t:redirection>
+    <t:local protocol="TCP"
+             listenaddr="TargetIp"
+             listenport="TargetPort"
+             destaddr="//identifier"
+             destport="//service[name='smb']/port"
+             closeoncompletion="true"/>
+</t:redirection>
+</t:config>
+        <!--
+                /*
+                * EMERALDTHREADTOUCH
+                */
+        -->
+<t:config id="cd337b30526a5e80bd5776b9479b117671ce2445"
+          name="Emeraldthreadtouch"
+          version="1.0.0"
+          configversion="1.0.0.0"
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:t='tc0'>
+
+<t:inputparameters>
+    <t:parameter name="NetworkTimeout"
+                 description="Timeout for blocking network calls (in seconds).  Use -1 for no timeout."
+                 type="S16"
+                 default="60"/>
+    <t:parameter name="TargetIp"
+                 description="Target IP Address"
+                 type="IPv4"
+                 binding="//identifier"/>
+    <t:paramchoice name="Protocol"
+                   description="Protocol to connect to target with"
+                   default="SMB">
+        <t:paramgroup name="SMB"
+                      description="SMB over TCP">
+            <t:parameter name="TargetPort"
+                         description="Port used by SMB"
+                         type="TcpPort"
+                         default="445"/>
+        </t:paramgroup>
+        <t:paramgroup name="NBT"
+                      description="Netbios over TCP">
+            <t:parameter name="TargetPort"
+                         description="Port used by Netbios"
+                         type="TcpPort"
+                         default="139"/>
+        </t:paramgroup>
+    </t:paramchoice>
+    <t:paramchoice name="Credentials"
+                   description="Type of credentials to use">
+        <t:paramgroup name="Anonymous"
+                      description="Anonymous (NULL session)"/>
+        <t:paramgroup name="Guest"
+                      description="Guest account"/>
+        <t:paramgroup name="No password"
+                      description="User account with no password set">
+            <t:parameter name="Username"
+                         description=""
+                         type="UString"/>
+        </t:paramgroup>
+        <t:paramgroup name="Password"
+                      description="Username and password">
+            <t:parameter name="Username"
+                         description=""
+                         type="UString"/>
+            <t:parameter name="Password"
+                         description=""
+                         type="UString"/>
+        </t:paramgroup>
+        <t:paramgroup name="NTLM hash"
+                      description="Username and NTLM hash">
+            <t:parameter name="Username"
+                         description=""
+                         type="UString"/>
+            <t:parameter name="NTLMHash"
+                         description="NTLM password hash (in hex)"
+                         type="UString"/>
+        </t:paramgroup>
+        <t:paramgroup name="Both hashes"
+                      description="Username, NTLM hash, and LANMAN hash">
+            <t:parameter name="Username"
+                         description=""
+                         type="UString"/>
+            <t:parameter name="NTLMHash"
+                         description="NTLM password hash (in hex)"
+                         type="UString"/>
+            <t:parameter name="LANMANHash"
+                         description="LANMAN password hash (in hex)"
+                         type="UString"/>
+        </t:paramgroup>
+    </t:paramchoice>
+</t:inputparameters>
+
+<t:outputparameters>
+    <t:parameter name="PrinterName"
+                 description="The name of the printer on target"
+                 type="UString"
+                 format="List"/>
+</t:outputparameters>
+
+<t:redirection>
+    <t:local protocol="TCP"
+             listenaddr="TargetIp"
+             listenport="TargetPort"
+             destaddr="//identifier"
+             destport="TargetPort"
+             closeoncompletion="true"/>
+</t:redirection>
+
+<t:logic>
+    <t:or>
+        <t:service name="smb">
+            <t:bindtovalue name="Protocol"
+                           value="SMB"/>
+            <t:bindtopath name="TargetPort"
+                          path="//service[name='smb']/port"/>
+        </t:service>
+        <t:service name="nbt">
+            <t:bindtovalue name="Protocol"
+                           value="NBT"/>
+            <t:bindtopath name="TargetPort"
+                          path="//service[name='nbt']/port"/>
+        </t:service>
+    </t:or>
+</t:logic>
+</t:config>
+        <!--
+                /*
+                * ERRATICGOPHERTOUCH
+                */
+        -->
+<t:config id="36d1ffadd2b385b2a8a5498a6e05825e8ab97825"
+          name="Erraticgophertouch"
+          version="1.0.1"
+          configversion="1.0.1.0"
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:t='tc0'>
+<t:inputparameters>
+    <!-- All plugins that accept a callback must have the Callback* parameters
+     listed below, or their equivalents. -->
+    <t:parameter name="TargetIp"
+                 description="Target IP Address"
+                 type="IPv4"
+                 binding="//identifier"/>
+
+    <t:parameter name="TargetPort"
+                 description="Port used by the MSRPC service. Typically 445 (SMB), 139 not available for ERGO"
+                 type="TcpPort"
+                 default="445"
+                 binding="//service[name='msrpc']/port"/>
+
+</t:inputparameters>
+
+<t:outputparameters>
+    <t:parameter name="DimsvcEnabled" type="Boolean" description=""/>
+    <t:parameter name="Contract"
+                 description="The contract fulfilled by this plugin"
+                 type="String"
+                 value="Touch"/>
+</t:outputparameters>
+
+<t:redirection>
+    <t:local protocol="TCP"
+             listenaddr="TargetIp"
+             listenport="TargetPort"
+             destaddr="//identifier"
+             destport="//service[name='msrpc']/port"
+             closeoncompletion="true"/>
+</t:redirection>
+</t:config>
+        <!--
+                /*
+                * ESTEEMAUDITTOUCH
+                */
+        -->
+<config xmlns='urn:trch' name='Esteemaudittouch' version='2.1.0' schemaversion='2.1.0' configversion='2.1.0.0'
+        id='d685b3979e2b52bd60cb34c4c0f91b522fa28f54'>
+<inputparameters>
+    <parameter type='IPv4' name='TargetIp' description='Target IP Address'/>
+    <parameter type='TcpPort' name='TargetPort' description='Port used by the RDP service'>
+        <default>3389</default>
+    </parameter>
+    <parameter type='S16' name='NetworkTimeout'
+               description='Timeout for blocking network calls (in seconds).  Use -1 for no timeout.'>
+        <default>60</default>
+    </parameter>
+    <parameter type='S16' name='PacketTimeout' description='Timeout for each RDP packet.'>
+        <default>10</default>
+    </parameter>
+    <parameter type='U32' name='MaxProcessCount' description='The maximum number of RDP process loops to allow'>
+        <default>300</default>
+    </parameter>
+    <parameter hidden='true' type='Boolean' name='SendSpacebar'
+               description='Whether to send spacebar to clear legal text caption or not'>
+        <default>false</default>
+    </parameter>
+    <parameter hidden='true' type='U32' name='ProcessCountToSendSpaceOn'
+               description='Process loop to clear the legal text caption on'>
+        <default>3</default>
+    </parameter>
+    <parameter hidden='true' type='U32' name='MaxRDPLibErrorCount'
+               description='Maximum number of RDPLib errors to allow'>
+        <default>3</default>
+    </parameter>
+</inputparameters>
+<outputparameters>
+    <parameter type='String' name='Architecture' description='Type of processor the target is running on'/>
+    <parameter type='String' name='Target' description='Operating system and service pack of the target'/>
+    <parameter type='String' name='EncryptionMethod' description='Encryption method the target is running'/>
+    <parameter type='Boolean' name='SmartCardAuth' description='If the target supports smart card authentication'/>
+    <parameter type='U32' name='RdpLibHertz' description='Extrapolated RdpLib processing cycles per second.'/>
+    <parameter type='String' name='Contract' description='The contract fulfilled by this plugin'/>
+</outputparameters>
+<redirection>
+    <local protocol='TCP' listenaddr='TargetIp' listenport='TargetPort' closeoncompletion='true' destaddr='TargetIp'
+           destport='TargetPort'/>
+</redirection>
+</config>
+        <!--
+                /*
+                * EXPLODINGCANTOUCH
+                */
+        -->
+<t:config id="8f04b3348956b0ac62326e735eb33fae9106ff43"
+          name="Explodingcantouch"
+          version="1.2.1"
+          configversion="1.2.1.0"
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:t='tc0'>
+<t:inputparameters>
+    <!-- All plugins that accept a callback must have the Callback* parameters
+         listed below, or their equivalents. -->
+    <t:parameter name="hostString"
+                 description="String to use in HTTP request"
+                 type="String"
+                 default="localhost"/>
+    <t:parameter name="maxSizeToCheck"
+                 description="Use 130 to ensure path size determination, less to send fewer requests.  70 will cover all exploitable sizes."
+                 type="U32"
+                 default="70"/>
+    <t:parameter name="NetworkTimeout"
+                 description="Timeout for blocking network calls (in seconds).  Use -1 for no timeout."
+                 type="S16"
+                 default="60"/>
+    <t:parameter name="EnableSSL"
+                 description="Enable SSL for HTTPS targets"
+                 type="Boolean" default="false"/>
+    <t:parameter name="TargetIp"
+                 description="Target IP Address"
+                 type="IPv4"
+                 binding="//identifier"/>
+    <t:parameter name="TargetPort"
+                 description="Port used by the HTTP service"
+                 type="TcpPort"/>
+    <t:parameter name="Delay"
+                 description="Number of seconds to wait between each request"
+                 type="U32"
+                 default="0"/>
+</t:inputparameters>
+<t:outputparameters>
+    <t:parameter name="IISPathSize"
+                 description="Length of IIS path"
+                 type="U32"/>
+    <t:parameter name="hostString"
+                 description="String to use in HTTP requests"
+                 type="String"/>
+    <!--
+      <t:parameter name="Contract"
+                   description="The contract fulfilled by this plugin"
+                   type="String"
+                   value="StagedUpload"/>
+    -->
+</t:outputparameters>
+
+<t:redirection>
+    <t:local protocol="TCP"
+             listenaddr="TargetIp"
+             listenport="TargetPort"
+             destaddr="//identifier"
+             destport="TargetPort"
+             closeoncompletion="true"/>
+</t:redirection>
+
+<t:logic>
+    <t:or>
+        <t:service name="http">
+            <t:and>
+                <t:product name="Microsoft IIS" version="6.0"/>
+                <t:service name="http-option-propfind">
+                    <t:bindtovalue name="EnableSSL" value="false"/>
+                    <t:bindtopath name="TargetPort"
+                                  path="//service[name='http']/port"/>
+                </t:service>
+            </t:and>
+        </t:service>
+
+        <t:service name="https">
+            <t:and>
+                <t:product name="Microsoft IIS" version="6.0"/>
+                <t:service name="http-option-propfind">
+                    <t:bindtovalue name="EnableSSL" value="true"/>
+                    <t:bindtopath name="TargetPort"
+                                  path="//service[name='https']/port"/>
+                </t:service>
+            </t:and>
+        </t:service>
+    </t:or>
+</t:logic>
+
+</t:config>
+        <!--
+                /*
+                * IISTOUCH
+                */
+        -->
+<t:config id="b9cc95073b690974e62aab9c94c2dfda94893533"
+          name="Iistouch"
+          version="1.2.2"
+          configversion="1.2.2.0"
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:t='tc0'>
+<t:inputparameters>
+    <t:parameter name="TargetIp"
+                 description="Target IP Address"
+                 type="IPv4"
+                 binding="//identifier"/>
+    <t:parameter name="TargetPort"
+                 description="Port used by the HTTP service"
+                 type="TcpPort"/>
+    <t:parameter name="NetworkTimeout"
+                 description="Timeout for blocking network calls (in seconds).  Use -1 for no timeout."
+                 type="S16"
+                 default="60"/>
+    <t:parameter name="EnableSSL" description="Enable SSL for HTTPS targets" type="Boolean" default="false"/>
+    <t:parameter name="hostString"
+                 description="String to use in HTTP request"
+                 type="String"
+                 default="localhost"/>
+
+
+</t:inputparameters>
+
+<t:outputparameters>
+    <t:parameter name="Contract"
+                 description="The contract fulfilled by this plugin"
+                 type="String"
+                 value="TouchInfo"/>
+    <t:parameter name="verMajor"
+                 description="IIS Major Version"
+                 type="U8"/>
+    <t:parameter name="verMinor"
+                 description="IIS Minor Version"
+                 type="U8"/>
+    <t:parameter name="OperatingSystem"
+                 description="IIS OS Version"
+                 type="String"/>
+    <t:parameter name="Language"
+                 description="IIS OS Language"
+                 type="String"/>
+    <t:parameter name="ServicePack"
+                 description="IIS OS Service Pack"
+                 type="String"/>
+    <t:parameter name="Path"
+                 description="IIS target pathname"
+                 type="String"/>
+    <t:parameter name="EnableSSL"
+                 description="Enable SSL for HTTPS targets"
+                 type="Boolean"/>
+    <t:parameter name="webdavFlag"
+                 description="True if webdav is enabled"
+                 type="Boolean"/>
+</t:outputparameters>
+
+<t:redirection>
+    <t:local protocol="TCP"
+             listenaddr="TargetIp"
+             listenport="TargetPort"
+             destaddr="//identifier"
+             destport="//service[name='http']/port"
+             closeoncompletion="true"/>
+</t:redirection>
+
+</t:config>
+        <!--
+                /*
+                * NAMEDPIPETOUCH
+                */
+        -->
+<config xmlns="urn:trch"
+        id="92a761c29b946aa458876ff78375e0e28bc8acb0"
+        name="Namedpipetouch"
+        version="2.0.0"
+        configversion="2.0.0.0"
+        schemaversion="2.0.0">
+<inputparameters>
+    <!-- All plugins that perform blocking network calls must have a NetworkTimeout
+         parameter or its equivalent -->
+    <parameter name="NetworkTimeout"
+               description="Timeout for blocking network calls (in seconds).  Use -1 for no timeout."
+               type="S16">
+        <default>60</default>
+    </parameter>
+    <parameter name="TargetIp"
+               description="Target IP Address"
+               type="IPv4"/>
+    <parameter name="TargetPort"
+               description="Port used by the SMB or NBT service"
+               type="TcpPort">
+        <default>445</default>
+    </parameter>
+
+    <paramchoice name="Protocol" description="SMB (default port 445) or NBT (default port 139)">
+        <default>SMB</default>
+        <paramgroup name="SMB" description="">
+            <parameter name="UsingNbt" description="Boolean stating to use Nbt or not" type="Boolean" hidden="true">
+                <default>0</default>
+            </parameter>
+        </paramgroup>
+        <paramgroup name="NBT" description="">
+            <parameter name="UsingNbt" description="Boolean stating to use Nbt or not" type="Boolean" hidden="true">
+                <default>1</default>
+            </parameter>
+        </paramgroup>
+    </paramchoice>
+
+    <!--
+      Below is the list of named pipes. The list follows python list syntax ( comma delimited, single quotes around each string ).
+      When adding a new named pipe to the list, also add an entry describing what that pipe represents in the DescList.
+      
+      The Pipes are associated with their description by index. When adding a new entry, group it with similar entries and ensure
+      that the description lines up with the pipe name
+      
+      The program will group similar names together to make the output more readable, so it is advantageous to have the same
+      description for new pipes if it is detecting a similar thing.
+      
+      The pipes are listed alphabetically. First OS standard pipes, followed by PSP pipes
+    -->
+    <parameter name="PipeList"
+               description="List of Pipes to check for"
+               type="String"
+               format="List"
+               hidden="true">
+        <!--Must be on the same line...new version of EDF is very finnicky, makes this much less readable :(-->
+        <!--no extra spaces, new lines, nothing. Plugin will fail in validate parameters if this list isn't parsed correctly-->
+        <value>
+            ['\PIPE\browser','\PIPE\lsarpc','\PIPE\spoolss','\PIPE\360OnAccessGet','\PIPE\360OnAccessSet','\PIPE\aswUpdSv','\PIPE\afwCallbackPipe2','\PIPE\afwCallbackPipe2','\PIPE\aswUpdSv','\PIPE\_pspuser_780_AVGIDSMONITOR.EXE_9d97da47-8de1-4699-b3da-9eafb262f2a4','\PIPE\AVG7B14C58C-E30D-11DB-B553-F88A56D89593','\PIPE\AvgFwS8.WDCommunicationPipe1','\PIPE\AvgFwS8.WDCommunicationPipe2','\PIPE\AvgTrayPipeName000176','\PIPE\AvgTrayPipeName0001761','\PIPE\AvgTrayPipeName0001762','\PIPE\AvgFwS8.WDCommunicationPipe','\PIPE\_pspuser_3620_AVGIDSMONITOR.EXE_9fde9445-f261-4985-a056-fb033d1a64cd','\PIPE\AVG-CHJW-0B47172B-B945-42f8-AA88-8D4F98F660DB','\PIPE\AVG-CHJW-C81C2B71-E0F0-44cb-B6A7-15999D0F539A','\PIPE\AvgFw.WDCommunicationPipe','\PIPE\AvgFw.WDCommunicationPipe1','\PIPE\AvgFw.WDCommunicationPipe2','\PIPE\AvgTrayPipeName000840','\PIPE\AvgTrayPipeName0008401','\PIPE\AvgTrayPipeName0008402','\PIPE\AvgUIPipeName002788','\PIPE\AvgUIPipeName0027881','\PIPE\AvgUIPipeName0027882','\PIPE\AveSvc_EngineDienst200705311802','\PIPE\AveSvc_EngineService2008','\PIPE\avguard01','\PIPE\AVSCAN_REP_000000000000c883','\PIPE\AVWebCatServer0','\PIPE\AVWebGuardServer','\PIPE\AVWebProtServer0','\PIPE\SERVERPIPENAME','\PIPE\AveSvc_EngineService2008','\PIPE\bdantiphishing','\PIPE\bdantiphishing','\PIPE\bdantispam','\PIPE\EXTREG','\PIPE\LIVESRV','\PIPE\MIDASCOMM_SERVER','\PIPE\VSSERV','\PIPE\__fships_hook_server__','\PIPE\__fships_injector__','\PIPE\rcn_18871562230061','\PIPE\rcn_47843719166','\PIPE\rcn_49140823412','\PIPE\rcn_491711751329','\PIPE\rcn_50406860721','\PIPE\rcn_507341306237','\PIPE\rcn_51109653602','\PIPE\rcn_520781201855','\PIPE\rcn_520932065562','\PIPE\rcn_520932267096','\PIPE\rcn_522811486723','\PIPE\rcn_530461792332','\PIPE\rcn_53156781683','\PIPE\rcn_564531165073','\PIPE\rcn_580461750377','\PIPE\rcn_621562061643','\PIPE\rcn_637501693024','\PIPE\rcn_63750782962','\PIPE\rcn_647032361703','\PIPE\rcn_655781047893','\PIPE\rcn_655931694327','\PIPE\rcn_662811357824','\PIPE\rcn_67953938451','\PIPE\rcn_682651449794','\PIPE\rcn_685151921711','\PIPE\nai_vseconsole01','\PIPE\nai_vseconsole01','\PIPE\Symantec_{F9698F61-2E57-469B-B29B-1EFB17827356}_{0C55C096-0F1D-4F28-AAA2-85EF591126E7}','\PIPE\Symantec
+            Core
+            LC','\PIPE\Symantec_{586D4B8E-3DBB-4E4O-9A7E-4670F760FAC4}_{0C55C096-0F1D-4F28-AAA2-85EF591126E7}','\PIPE\Symantec_{EF903280-DA47-4C1B-99F8-EC15E7900956}_{0C55C096-0F1D-4F28-AAA2-85EF591126E7}','\PIPE\acsipc_server','\PIPE\pavfnlpc','\PIPE\Global\PNMIPC_SH_IPT-WebProxy','\PIPE\pavfnlpc','\PIPE\PavTPU\TPK_Event_1504','\PIPE\Sophos@BOPSv3','\PIPE\NP2970625197SRV','\PIPE\vmware-usbarbpipe']
+        </value>
+    </parameter>
+    <parameter name="DescList"
+               description="List of Descriptions corresponding to pipes"
+               type="String"
+               format="List"
+               hidden="true">
+        <value>['OS Pipe: computer browser','OS Pipe: lsass rpc','OS Pipe: print spooler','360 Safe','360 Safe','alwil
+            Avast professional 4.8 Avast Internet Security v5.0','Avast Internet Security 5.0','Avast Internet Security
+            5.0','Avast pro 4.8 or Avast IS v5.0','AVG IS 8.5','AVG IS 8.5','AVG IS 8.5','AVG IS 8.5','AVG IS 8.5','AVG
+            IS 8.5','AVG IS 8.5','AVG IS 8.5-9.0','AVG IS 9.0.646','AVG IS 9.0.646','AVG IS 9.0.646','AVG IS
+            9.0.646','AVG IS 9.0.646','AVG IS 9.0.646','AVG IS 9.0.646','AVG IS 9.0.646','AVG IS 9.0.646','AVG IS
+            9.0.646','AVG IS 9.0.646','AVG IS 9.0.646','avira antivirus personal edition premium v7.06, avira premium
+            security suite v7','avira premium sec suite v8','avira premium sec suite v8','avira premium sec suite
+            v8','avira premium sec suite v8','avira premium sec suite v8','avira premium sec suite v8','avira premium
+            sec suite v8','Avira premium security suite v8','BitDefender 2010 v13','BitDefender TotalSec 2010
+            v13.0.11','BitDefender TotalSec 2010 v13.0.11','BitDefender TotalSec 2010 v13.0.11','BitDefender TotalSec
+            2010 v13.0.11 Bit Defender Total Security 2009','BitDefender TotalSec 2010 v13.0.11 Bit Defender Total
+            Security 2009','BitDefender TotalSec 2010 v13.0.11 Bit Defender Total Security 2009','FSecure 2010','FSecure
+            2010','FSecure 2010','FSecure 2010','FSecure 2010','FSecure 2010','FSecure 2010','FSecure 2010','FSecure
+            2010','FSecure 2010','FSecure 2010','FSecure 2010','FSecure 2010','FSecure 2010','FSecure 2010','FSecure
+            2010','FSecure 2010','FSecure 2010','FSecure 2010','FSecure 2010','FSecure 2010','FSecure 2010','FSecure
+            2010','FSecure 2010','FSecure 2010','FSecure 2010','FSecure 2010','McAfee 8.7i','McAfee 8.7i','Norton
+            Internet Security 2010','Norton IS 2008','Norton360 v4; Norton IS 2009; Norton IS 2010; Norton 360
+            v4','Norton360 v4','Outpost Security Suite Pro 2009 v6.5','Panda IS 2010 v15','Panda IS 2010 v15','Panda IS
+            2010 v15','Panda IS 2010 v15','Sophos 9.0','TrendMicro IS 2010 v17.50','VMWare Host']
+        </value>
+    </parameter>
+</inputparameters>
+
+
+<redirection>
+    <local protocol="TCP"
+           listenaddr="TargetIp"
+           listenport="TargetPort"
+           destaddr="TargetIp"
+           destport="TargetPort"
+           closeoncompletion="true"/>
+    <remote protocol="TCP"
+            listenaddr="CallbackIp"
+            listenport="CallbackPort"
+            destport="CallbackLocalPort"/>
+</redirection>
+
+<logic>
+    <service name="smtp">
+        <bindtopath name="TargetPort" path="//service[name='smtp']/port"/>
+    </service>
+    <bindtopath name="TargetIp" path="//identifier"/>
+</logic>
+</config>
+        <!--
+                /*
+                * PRINTJOBDELETE
+                */
+        -->
+<t:config id="61a15b4a6a675a744bb885f4205e86a68697c8ee"
+          name="Printjobdelete"
+          version="1.0.0"
+          configversion="1.0.0.0"
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:t='tc0'>
+<t:inputparameters>
+    <t:parameter name="NetworkTimeout"
+                 description="Timeout for blocking network calls (in seconds).  Use -1 for no timeout."
+                 type="S16"
+                 default="60"/>
+    <t:parameter name="TargetIp"
+                 description="Target IP Address"
+                 type="IPv4"
+                 binding="//identifier"/>
+    <t:paramchoice name="Protocol"
+                   description="Protocol to connect to target with"
+                   default="SMB">
+        <t:paramgroup name="SMB"
+                      description="SMB over TCP">
+            <t:parameter name="TargetPort"
+                         description="Port used by SMB"
+                         type="TcpPort"
+                         default="445"/>
+        </t:paramgroup>
+        <t:paramgroup name="NBT"
+                      description="Netbios over TCP">
+            <t:parameter name="TargetPort"
+                         description="Port used by Netbios"
+                         type="TcpPort"
+                         default="139"/>
+        </t:paramgroup>
+    </t:paramchoice>
+    <t:paramchoice name="Credentials"
+                   description="Type of credentials to use">
+        <t:paramgroup name="Anonymous"
+                      description="Anonymous (NULL session)"/>
+        <t:paramgroup name="Guest"
+                      description="Guest account"/>
+        <t:paramgroup name="No password"
+                      description="User account with no password set">
+            <t:parameter name="Username"
+                         description=""
+                         type="UString"/>
+        </t:paramgroup>
+        <t:paramgroup name="Password"
+                      description="Username and password">
+            <t:parameter name="Username"
+                         description=""
+                         type="UString"/>
+            <t:parameter name="Password"
+                         description=""
+                         type="UString"/>
+        </t:paramgroup>
+        <t:paramgroup name="NTLM hash"
+                      description="Username and NTLM hash">
+            <t:parameter name="Username"
+                         description=""
+                         type="UString"/>
+            <t:parameter name="NTLMHash"
+                         description="NTLM password hash (in hex)"
+                         type="UString"/>
+        </t:paramgroup>
+        <t:paramgroup name="Both hashes"
+                      description="Username, NTLM hash, and LANMAN hash">
+            <t:parameter name="Username"
+                         description=""
+                         type="UString"/>
+            <t:parameter name="NTLMHash"
+                         description="NTLM password hash (in hex)"
+                         type="UString"/>
+            <t:parameter name="LANMANHash"
+                         description="LANMAN password hash (in hex)"
+                         type="UString"/>
+        </t:paramgroup>
+    </t:paramchoice>
+    <t:parameter name="PrinterName"
+                 description="The name of the printer on target"
+                 type="UString"/>
+    <t:parameter name="JobId"
+                 description="The ID of the Print Job on target"
+                 type="U32"/>
+</t:inputparameters>
+<t:redirection>
+    <t:local protocol="TCP"
+             listenaddr="TargetIp"
+             listenport="TargetPort"
+             destaddr="//identifier"
+             destport="//service[name='smtp']/port"
+             closeoncompletion="true"/>
+</t:redirection>
+</t:config>
+        <!--
+                /*
+                * PRINTJOBLIST
+                */
+        -->
+<t:config id="561b5106574f54a157beb31c05c94a520f47ffca"
+          name="Printjoblist"
+          version="1.0.0"
+          configversion="1.0.0.0"
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:t='tc0'>
+<t:inputparameters>
+    <t:parameter name="TargetIp"
+                 description="Target IP Address"
+                 type="IPv4"
+                 binding="//identifier"/>
+    <t:parameter name="NetworkTimeout"
+                 description="Timeout for blocking network calls (in seconds).  Use -1 for no timeout."
+                 type="S16"
+                 default="60"/>
+    <t:paramchoice name="Protocol"
+                   description="Protocol to connect to target with"
+                   default="SMB">
+        <t:paramgroup name="SMB"
+                      description="SMB over TCP">
+            <t:parameter name="TargetPort"
+                         description="Port used by SMB"
+                         type="TcpPort"
+                         default="445"/>
+        </t:paramgroup>
+        <t:paramgroup name="NBT"
+                      description="Netbios over TCP">
+            <t:parameter name="TargetPort"
+                         description="Port used by Netbios"
+                         type="TcpPort"
+                         default="139"/>
+        </t:paramgroup>
+    </t:paramchoice>
+    <t:paramchoice name="Credentials"
+                   description="Type of credentials to use">
+        <t:paramgroup name="Anonymous"
+                      description="Anonymous (NULL session)"/>
+        <t:paramgroup name="Guest"
+                      description="Guest account"/>
+        <t:paramgroup name="No password"
+                      description="User account with no password set">
+            <t:parameter name="Username"
+                         description=""
+                         type="UString"/>
+        </t:paramgroup>
+        <t:paramgroup name="Password"
+                      description="Username and password">
+            <t:parameter name="Username"
+                         description=""
+                         type="UString"/>
+            <t:parameter name="Password"
+                         description=""
+                         type="UString"/>
+        </t:paramgroup>
+        <t:paramgroup name="NTLM hash"
+                      description="Username and NTLM hash">
+            <t:parameter name="Username"
+                         description=""
+                         type="UString"/>
+            <t:parameter name="NTLMHash"
+                         description="NTLM password hash (in hex)"
+                         type="UString"/>
+        </t:paramgroup>
+        <t:paramgroup name="Both hashes"
+                      description="Username, NTLM hash, and LANMAN hash">
+            <t:parameter name="Username"
+                         description=""
+                         type="UString"/>
+            <t:parameter name="NTLMHash"
+                         description="NTLM password hash (in hex)"
+                         type="UString"/>
+            <t:parameter name="LANMANHash"
+                         description="LANMAN password hash (in hex)"
+                         type="UString"/>
+        </t:paramgroup>
+    </t:paramchoice>
+    <t:parameter name="PrinterName"
+                 description="The name of the printer on target"
+                 type="UString"/>
+</t:inputparameters>
+
+<t:outputparameters>
+    <t:parameter name="JobId"
+                 description="List of job IDs from printer"
+                 type="U32"
+                 format="List"/>
+    <t:parameter name="PrinterName"
+                 description="The name of the printer on target"
+                 type="UString"/>
+</t:outputparameters>
+
+<t:redirection>
+    <t:local protocol="TCP"
+             listenaddr="TargetIp"
+             listenport="TargetPort"
+             destaddr="//identifier"
+             destport="//service[name='smb']/port"
+             closeoncompletion="true"/>
+</t:redirection>
+</t:config>
+        <!--
+                /*
+                * RPCTOUCH
+                */
+        -->
+<t:config id="cbe9b627fe881b0f5fe6122af36fe6234935c7e7"
+          name="Rpctouch"
+          version="2.1.0"
+          configversion="2.1.0.0"
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:t='tc0'>
+<t:inputparameters>
+    <!-- All plugins that accept a callback must have the Callback* parameters
+         listed below, or their equivalents. -->
+    <t:parameter name="NetworkTimeout"
+                 description="Timeout for blocking network calls (in seconds).  Use -1 for no timeout."
+                 type="S16"
+                 default="60"/>
+
+    <t:parameter name="TargetIp"
+                 description="Target IP Address"
+                 type="IPv4"
+                 binding="//identifier"/>
+
+    <t:parameter name="TargetPort"
+                 description="Port used by the MSRPC service. Typically 445 (SMB) or 139 (NBT)"
+                 type="TcpPort"
+                 default="445"
+                 binding="//service[name='msrpc']/port"/>
+
+    <t:paramchoice name="Protocol" description="Protocol to connect to target with. Touches will vary with protocol."
+                   default="SMB">
+        <t:paramgroup name="SMB" description="SMB over TCP"/>
+        <t:paramgroup name="NBT" description="Netbios over TCP">
+        </t:paramgroup>
+    </t:paramchoice>
+    <t:parameter name="NetBIOSName" type="String"
+                 description="Name to use if running touch over NBT, Vista and above require real hostname."
+                 default="*SMBSERVER"/>
+    <t:parameter name="TouchLanguage" type="Boolean" description="Run language touch against RPC spooler service."
+                 default="False"/>
+    <t:parameter name="TouchArchitecture" type="Boolean"
+                 description="Run architecture touch against SMB via a memory disclosure bug." default="False"/>
+</t:inputparameters>
+
+<t:outputparameters>
+    <t:parameter name="Protocol" type="String" description=""/>
+    <t:parameter name="Target" type="String" description=""/>
+    <t:parameter name="TargetString" type="String" description=""/>
+    <t:parameter name="TargetDWORD" type="U32" description=""/>
+    <t:parameter name="Language" type="String" description=""/>
+    <t:parameter name="NetworkTimeout" type="S16" description=""/>
+    <t:parameter name="Contract"
+                 description="The contract fulfilled by this plugin"
+                 type="String"
+                 value="StagedUpload"/>
+</t:outputparameters>
+
+<t:redirection>
+    <t:local protocol="TCP"
+             listenaddr="TargetIp"
+             listenport="TargetPort"
+             destaddr="//identifier"
+             destport="//service[name='msrpc']/port"
+             closeoncompletion="true"/>
+</t:redirection>
+</t:config>
+        <!--
+                /*
+                * SMBTOUCH
+                */
+        -->
+<config xmlns='urn:trch' name='Smbtouch' version='1.1.1' schemaversion='2.1.0' configversion='1.1.1.0'
+        id='985f383e6edd6d9397aa5da9601c8bc867f6b713'>
+<inputparameters>
+    <parameter type='S16' name='NetworkTimeout'
+               description='Timeout for blocking network calls (in seconds).  Use -1 for no timeout.'>
+        <default>60</default>
+    </parameter>
+    <parameter type='IPv4' name='TargetIp' description='Target IP Address'/>
+    <parameter type='TcpPort' name='TargetPort' description='Port used by the SMB service'>
+        <default>445</default>
+    </parameter>
+    <parameter hidden='true' required='false' type='IPv4' name='RedirectedTargetIp'
+               description='Physical (redirected) target IP'/>
+    <parameter hidden='true' required='false' type='TcpPort' name='RedirectedTargetPort'
+               description='Physical (redirected) target port'/>
+    <paramchoice name='Protocol' description='SMB (default port 445) or NBT (default port 139)'>
+        <default>SMB</default>
+        <paramgroup name='SMB' description=''>
+            <parameter hidden='true' type='Boolean' name='UsingNbt' description='Boolean stating to use Nbt or not'>
+                <default>0</default>
+            </parameter>
+        </paramgroup>
+        <paramgroup name='NBT' description=''>
+            <parameter hidden='true' type='Boolean' name='UsingNbt' description='Boolean stating to use Nbt or not'>
+                <default>1</default>
+            </parameter>
+        </paramgroup>
+    </paramchoice>
+    <parameter type='String' name='Pipe' description='Test an additional pipe to see if it is accessible (optional)'>
+        <default/>
+    </parameter>
+    <parameter type='Buffer' name='Share'
+               description='Test a file share to see if it is accessible (optional), entered as hex bytes (in unicode)'>
+        <default/>
+    </parameter>
+    <paramchoice name='Credentials' description='Type of credentials to use'>
+        <default>Anonymous</default>
+        <paramgroup name='Anonymous' description='Anonymous (NULL session)'/>
+        <paramgroup name='Guest' description='Guest account'/>
+        <paramgroup name='Blank' description='User account with no password set'>
+            <parameter type='Buffer' name='Username' description='Username entered as hex bytes (in unicode)'/>
+        </paramgroup>
+        <paramgroup name='Password' description='User name and password'>
+            <parameter type='Buffer' name='Username' description='Username entered as hex bytes (in unicode)'/>
+            <parameter type='Buffer' name='Password' description='Password entered as hex bytes (in unicode)'/>
+        </paramgroup>
+        <paramgroup name='NTLM' description='User name and NTLM hash'>
+            <parameter type='Buffer' name='Username' description='Username entered as hex bytes (in unicode)'/>
+            <parameter type='Buffer' name='NtlmHash' description='NTLM password hash (in hex)'/>
+        </paramgroup>
+    </paramchoice>
+</inputparameters>
+<constants>
+    <parameter type='U8' name='Anonymous' description=''>
+        <value>0</value>
+    </parameter>
+    <parameter type='U8' name='Guest' description=''>
+        <value>1</value>
+    </parameter>
+    <parameter type='U8' name='Blank' description=''>
+        <value>2</value>
+    </parameter>
+    <parameter type='U8' name='Password' description=''>
+        <value>3</value>
+    </parameter>
+    <parameter type='U8' name='NTLM' description=''>
+        <value>4</value>
+    </parameter>
+</constants>
+<outputparameters>
+    <parameter type='String' name='Target' description='Operating System, Service Pack, of Target OS'/>
+    <parameter type='String' name='TargetOsArchitecture' description='Target architecture'/>
+    <parameter type='String' name='PipeName' description='Pipe available to use'/>
+    <parameter type='Buffer' name='ShareName' description='Share available to use'/>
+    <parameter type='String' name='Protocol' description='SMB or NBT'/>
+    <parameter type='String' name='Credentials' description='The architecture of the target operating system'/>
+    <parameter type='Buffer' name='Username' description='Username entered as hex bytes (in unicode)'/>
+    <parameter type='Buffer' name='Password' description='Password entered as hex bytes (in unicode)'/>
+    <parameter type='Buffer' name='NtlmHash' description='NTLM password hash (in hex)'/>
+</outputparameters>
+<errors>
+    <errorcode name='SMBT_SUCCESS' value='EDF_SUCCESS' description='Smbtouch executed successfully.'/>
+    <errorcode name='SMBT_RESULT_NETWORK_ERROR' value='65' description='A network error occured'/>
+    <errorcode name='SMBT_RESULT_UNSUPPORTED_OS' value='66' description='The target OS is not recognized or supported'/>
+    <errorcode name='SMBT_RESULT_INVALID_PARAM' value='67' description='A parameter is invalid'/>
+</errors>
+<redirection>
+    <local protocol='TCP' listenaddr='RedirectedTargetIp' listenport='RedirectedTargetPort' closeoncompletion='true'
+           destaddr='TargetIp' destport='TargetPort'/>
+</redirection>
+</config>
+        <!--
+                /*
+                * WEBADMINTOUCH
+                */
+        -->
+<t:config id="f8f36381b1933b8ae3f8a7dd945f913d1afd7e0c"
+          name="Webadmintouch"
+          version="1.0.1"
+          configversion="1.0.1.0"
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:t='tc0'>
+<t:inputparameters>
+
+    <!-- Parameters for the connection to target -->
+    <t:parameter name="NetworkTimeout"
+                 description="Timeout for blocking network calls (in seconds).  Use 0 for no timeout."
+                 type="S16"
+                 default="60"/>
+
+    <!-- Parameters for the target machine -->
+    <t:parameter name="TargetIp"
+                 description="Target IPv4 Address (dot notation)"
+                 type="IPv4"
+                 binding="//identifier"/>
+    <t:parameter name="TargetPort"
+                 description="Target Port Number"
+                 type="TcpPort"
+                 binding="//service[name='http']/port"/>    <!--  Replace this with a parameter choice -->
+
+    <!-- Parameters for the WebAdmin server -->
+    <t:parameter name="ExpectedProtocol"
+                 description="WebAdmin protocol (http, https)"
+                 type="String"/>
+    <t:parameter name="ExpectedDomain"
+                 description="WebAdmin IPv4 Address (dot notation)"
+                 type="IPv4"
+                 binding="//identifier"/>
+    <t:parameter name="ExpectedPort"
+                 description="WebAdmin Port Number"
+                 type="TcpPort"
+                 binding="//service[name='http']/port"/>    <!--  Replace this with a parameter choice -->
+
+    <!-- Parameters for the target account -->
+    <t:parameter name="TargetAcctDomain"
+                 description="Target email domain"
+                 type="String"/>
+    <t:parameter name="TargetAcctUsr"
+                 description="Target account username"
+                 type="String"/>
+    <t:parameter name="TargetAcctPwd"
+                 description="Target account password"
+                 type="String"/>
+
+    <!-- List of supported version numbers -->
+    <t:parameter name="SupportedVersions"
+                 description="List of strings of supported version numbers"
+                 type="String"
+                 format="List"
+                 hidden="true"
+                 value="['3.3.0',
+                         '3.4.00',
+                         '3.4.10',
+                         '3.4.20',
+                         '3.4.3',
+                        '10.0.0',
+                        '10.0.1',
+                        '10.0.2',
+                        '10.0.3',
+                        '10.0.4',
+                        '10.0.5',
+                        '10.1.0',
+                        '10.1.1',
+                        '10.1.2']"/>
+
+</t:inputparameters>
+<!--
+  <t:outputparameters>
+    <t:parameter name="Contract"
+                 description="The contract fulfilled by this plugin"
+                 type="String"
+                 value="StagedUpload"/>
+  </t:outputparameters>
+-->
+<t:redirection>
+    <t:local protocol="TCP"
+             listenaddr="TargetIp"
+             listenport="TargetPort"
+             destaddr="//identifier"
+             destport="//service[name='smtp']/port"
+             closeoncompletion="true"/>
+    <t:remote protocol="TCP"
+              listenaddr="CallbackIp"
+              listenport="CallbackPort"
+              destport="CallbackLocalPort"/>
+</t:redirection>
+</t:config>
+        <!--
+                /*
+                * WORLDCLIENTTOUCH
+                */
+        -->
+<t:config id="b0cec9189bbf3c41c3991a08a1f96b68b5ed0127"
+          name="Worldclienttouch"
+          version="1.0.1"
+          configversion="1.0.1.0"
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+          xmlns:t='tc0'>
+<t:inputparameters>
+
+    <!-- Parameters for the connection to target -->
+    <t:parameter name="NetworkTimeout"
+                 description="Timeout for blocking network calls (in seconds).  Use 0 for no timeout."
+                 type="S16"
+                 default="60"/>
+
+    <!-- Parameters for the target machine -->
+    <t:parameter name="TargetIp"
+                 description="Target IPv4 Address (dot notation)"
+                 type="IPv4"
+                 binding="//identifier"/>
+    <t:parameter name="TargetPort"
+                 description="Target Port Number"
+                 type="TcpPort"
+                 binding="//service[name='http']/port"/>    <!--  Replace this with a parameter choice -->
+
+    <!-- Parameters for the WorldClient server -->
+    <t:parameter name="ExpectedProtocol"
+                 description="WorldClient protocol (http, https)"
+                 type="String"/>
+    <!--
+        <t:paramchoice name="ExpectedProtocol"
+                       description="WorldClient protocol (http, https)"
+                       default="http" >
+            <t:paramgroup name="http"  description=""><t:parameter name="http"  description="" type="String" value="http" hidden="true"/></t:paramgroup>
+            <t:paramgroup name="https" description=""><t:parameter name="https" description="" type="String" value="http" hidden="true"/></t:paramgroup>
+        </t:paramchoice>
+    -->
+    <t:parameter name="ExpectedDomain"
+                 description="WorldClient IPv4 Address (dot notation)"
+                 type="IPv4"
+                 binding="//identifier"/>
+    <t:parameter name="ExpectedPort"
+                 description="WorldClient Port Number"
+                 type="TcpPort"
+                 binding="//service[name='http']/port"/>    <!--  Replace this with a parameter choice -->
+
+    <!-- Parameters for the target account -->
+    <t:parameter name="TargetAcctDomain"
+                 description="Target account email domain"
+                 type="String"/>
+    <t:parameter name="TargetAcctUsr"
+                 description="Target account username"
+                 type="String"/>
+    <t:parameter name="TargetAcctPwd"
+                 description="Target account password"
+                 type="String"/>
+
+    <!-- List of supported version numbers -->
+    <t:parameter name="SupportedVersions"
+                 description="List of strings of supported WorldClient version numbers"
+                 type="String"
+                 format="List"
+                 hidden="true"
+                 value="['9.5.2',
+                         '9.6.0',
+                         '9.6.1',
+                         '9.6.2',
+                         '9.6.3',
+                         '9.6.4',
+                         '9.6.5',
+                         '9.6.6',
+                        '10.0.0',
+                        '10.0.1',
+                        '10.0.2',
+                        '10.0.3',
+                        '10.0.4',
+                        '10.0.5',
+                        '10.1.0',
+                        '10.1.1',
+                        '10.1.2']"/>
+
+    <!-- List of versions which respond with HTTP "Server" header -->
+    <t:parameter name="ServerHeaderVersions"
+                 description="List of strings of WorldClient versions which respond with the Server header"
+                 type="String"
+                 format="List"
+                 hidden="true"
+                 value="['9.5.2',
+                         '9.6.0',
+                         '9.6.1',
+                         '9.6.2',
+                         '9.6.3',
+                         '9.6.4',
+                         '9.6.5',
+                         '9.6.6',
+                        '10.0.0',
+                        '10.0.1',
+                        '10.0.2',
+                        '10.0.3',
+                        '10.0.4',
+                        '10.0.5']"/>
+
+    <!-- List of versions which have the "limited free" option -->
+    <t:parameter name="PossiblyLimitedVersions"
+                 description="List of strings of WorldClient versions with the limited free option"
+                 type="String"
+                 format="List"
+                 hidden="true"
+                 value="['10.0.0',
+                         '10.0.1',
+                         '10.0.2',
+                         '10.0.3',
+                         '10.0.4',
+                         '10.0.5',
+                         '10.1.0',
+                         '10.1.1',
+                         '10.1.2']"/>
+
+</t:inputparameters>
+<!--
+  <t:outputparameters>
+    <t:parameter name="Contract"
+                 description="The contract fulfilled by this plugin"
+                 type="String"
+                 value="StagedUpload"/>
+  </t:outputparameters>
+-->
+<t:redirection>
+    <t:local protocol="TCP"
+             listenaddr="TargetIp"
+             listenport="TargetPort"
+             destaddr="//identifier"
+             destport="//service[name='http']/port"
+             closeoncompletion="true"/>
+    <t:remote protocol="TCP"
+              listenaddr="CallbackIp"
+              listenport="CallbackPort"
+              destport="CallbackLocalPort"/>
+</t:redirection>
+</t:config>
+<!--
+                /*
+                * napi-0 : ERROR NAPI-NULL ~J/
+                */
+                napi_create
+                napi_delete
+                napi_setCleanup
+                napi_setID
+                napi_setProcess
+                napi_setValidate
+                mainWrapper
+-->
