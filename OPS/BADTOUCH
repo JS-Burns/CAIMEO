@@ -3,17 +3,50 @@
 */
 
 /*
+ * Architouch
+ * Domaintouch
+ * Eclipsedwingtouch
+ * Educatedscholartouch
+ * Emeraldthreadtouch
+ * Erraticgophertouch
+ * Esteemaudittouch
+ * Explodingcantouch
+ * Iistouch
+ * Namedpipetouch
+ * Printjobdelete
+ * Printjoblist
+ * Rpctouch
+ * Smbtouch
+ * Webadmintouch
+ * Worldclienttouch
+ * napi
+*/
+/*
 Reconnaissance tool scans the targets before the attack is launched, and later attaches a detailed report on the target.
-
 The tool collects its info using legitimate SMB messages which provide relevant Information about the victim machines.
-
 For example, extracting the Native OS Version using the SMB_COM_SESSION_SETUP_ANDX (0x73) command
-
-SMBTouch initiates a session which forces the infected server to disclose OS information. 
-
-Upon finding a vulnerable OS, SMBTouch proceeds to check the permissions it is granted by the OS. SMBTouch then reports what vulnerabilities are present in the system.
-
+BADTOUCH initiates a session which forces the infected server to disclose OS information. 
+Upon finding a vulnerable OS, BADTOUCH proceeds to check the permissions it is granted by the OS. 
+BADTOUCH then reports what vulnerabilities are present in the system.
 This is a familiar procedure in accordance with how exploit kits detect web-browser plugins to analyze vulnerabilities. 
-
-The information provided by SMBTouch is used to serve a suitable exploit.
+The information provided by BADTOUCH is used to serve a suitable exploit.
+*/
+/*
+Architouch-1.0.0.0.xml
+Domaintouch-1.1.1.0.xml
+Eclipsedwingtouch-1.0.4.0.xml
+Educatedscholartouch-1.0.0.0.xml
+Emeraldthreadtouch-1.0.0.0.xml
+Erraticgophertouch-1.0.1.0.xml
+Esteemaudittouch-2.1.0.0.xml
+Explodingcantouch-1.2.1.0.xml
+Iistouch-1.2.2.0.xml
+Namedpipetouch-2.0.0.0.xml
+Printjobdelete-1.0.0.0.xml
+Printjoblist-1.0.0.0.xml
+Rpctouch-2.1.0.0.xml
+Smbtouch-1.1.1.0.xml
+Webadmintouch-1.0.1.0.xml
+Worldclienttouch-1.0.1.0.xml
+napi-0.xml
 */
