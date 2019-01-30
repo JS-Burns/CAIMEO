@@ -35,7 +35,7 @@ var ARCHITOUCH = [
         "_configversion": "1.0.0.0",
         "_schemaversion": "2.0.0"
     }
-]
+];
 
 var DOMAINTOUCH = [
     {
@@ -164,7 +164,7 @@ var DOMAINTOUCH = [
         "_configversion": "1.1.1.0",
         "__prefix": "BADTOUCH"
     }
-]
+];
 
 var ECLIPSEDWINGTOUCH = [
     {
@@ -249,7 +249,7 @@ var ECLIPSEDWINGTOUCH = [
         "_configversion": "1.0.4.0",
         "__prefix": "BADTOUCH"
     }
-]
+];
 
 var EDUCATEDSCHOLARTOUCH = [
     {
@@ -297,7 +297,7 @@ var EDUCATEDSCHOLARTOUCH = [
         "_configversion": "1.0.0.0",
         "__prefix": "BADTOUCH"
     }
-]
+];
 
 var EMERALDTHREADTOUCH = [
     {
@@ -425,7 +425,7 @@ var EMERALDTHREADTOUCH = [
         "_configversion": "1.0.0.0",
         "__prefix": "BADTOUCH"
     }
-]
+];
 
 var ERRATICGOPHERTOUCH = [
     {
@@ -467,7 +467,7 @@ var ERRATICGOPHERTOUCH = [
         "_configversion": "1.0.1.0",
         "__prefix": "BADTOUCH"
     }
-]
+];
 
 var ESTEEMAUDITTOUCH = [
     {
@@ -536,7 +536,7 @@ var ESTEEMAUDITTOUCH = [
         "_configversion": "2.1.0.0",
         "_id": "d685b3979e2b52bd60cb34c4c0f91b522fa28f54"
     }
-]
+];
 
 var EXPLODINGCANTOUCH = [
     {
@@ -630,7 +630,7 @@ var EXPLODINGCANTOUCH = [
         "_configversion": "1.2.1.0",
         "__prefix": "BADTOUCH"
     }
-]
+];
 
 var IISTOUCH = [
     {
@@ -713,7 +713,7 @@ var IISTOUCH = [
         "_configversion": "1.2.2.0",
         "__prefix": "BADTOUCH"
     }
-]
+];
 
 var NAMEDPIPETOUCH = [
     {
@@ -779,7 +779,7 @@ var NAMEDPIPETOUCH = [
         "_configversion": "2.0.0.0",
         "_schemaversion": "2.0.0"
     }
-]
+];
 
 var PRINTJOBDELETE = [
     {
@@ -891,7 +891,7 @@ var PRINTJOBDELETE = [
         "_configversion": "1.0.0.0",
         "__prefix": "BADTOUCH"
     }
-]
+];
 
 var PRINTJOBLIST = [
     {
@@ -1009,7 +1009,7 @@ var PRINTJOBLIST = [
         "_configversion": "1.0.0.0",
         "__prefix": "BADTOUCH"
     }
-]
+];
 
 var RPCTOUCH = [
     {
@@ -1101,7 +1101,7 @@ var RPCTOUCH = [
         "_configversion": "2.1.0.0",
         "__prefix": "BADTOUCH"
     }
-]
+];
 
 var SMBTOUCH = [
     {
@@ -1251,7 +1251,7 @@ var SMBTOUCH = [
         "_configversion": "1.1.1.0",
         "_id": "985f383e6edd6d9397aa5da9601c8bc867f6b713"
     }
-]
+];
 
 var WEBADMINTOUCH = [
     {
@@ -1325,7 +1325,7 @@ var WEBADMINTOUCH = [
         "_configversion": "1.0.1.0",
         "__prefix": "BADTOUCH"
     }
-]
+];
 
 var WORLDCLIENTTOUCH = [
     {
@@ -1413,28 +1413,26 @@ var WORLDCLIENTTOUCH = [
         "_configversion": "1.0.1.0",
         "__prefix": "BADTOUCH"
     }
-]
+];
 
-var OPS = [ ARCHITOUCH,
-            DOMAINTOUCH,
-            ECLIPSEDWINGTOUCH,
-            EDUCATEDSCHOLARTOUCH,
-            EMERALDTHREADTOUCH,
-            ERRATICGOPHERTOUCH,
-            ESTEEMAUDITTOUCH,
-            EXPLODINGCANTOUCH,
-            IISTOUCH,
-            NAMEDPIPETOUCH,
-            PRINTJOBDELETE,
-            PRINTJOBLIST,
-            RPCTOUCH
-            SMBTOUCH,
-            WEBADMINTOUCH,
-            WORLDCLIENTTOUCH
-    ]
-
-print(OPS);
-
+var OPS = [
+    ARCHITOUCH,
+    DOMAINTOUCH,
+    ECLIPSEDWINGTOUCH,
+    EDUCATEDSCHOLARTOUCH,
+    EMERALDTHREADTOUCH,
+    ERRATICGOPHERTOUCH,
+    ESTEEMAUDITTOUCH,
+    EXPLODINGCANTOUCH,
+    IISTOUCH,
+    NAMEDPIPETOUCH,
+    PRINTJOBDELETE,
+    PRINTJOBLIST,
+    RPCTOUCH,
+    SMBTOUCH,
+    WEBADMINTOUCH,
+    WORLDCLIENTTOUCH
+    ];
 
 //]]>
 </script>
