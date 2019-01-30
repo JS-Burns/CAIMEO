@@ -1,1 +1,19 @@
-# BADTOUCH
+/*
+ # BADTOUCH
+*/
+
+/*
+Reconnaissance tool scans the targets before the attack is launched, and later attaches a detailed report on the target.
+
+The tool collects its info using legitimate SMB messages which provide relevant Information about the victim machines.
+
+For example, extracting the Native OS Version using the SMB_COM_SESSION_SETUP_ANDX (0x73) command
+
+SMBTouch initiates a session which forces the infected server to disclose OS information. 
+
+Upon finding a vulnerable OS, SMBTouch proceeds to check the permissions it is granted by the OS. SMBTouch then reports what vulnerabilities are present in the system.
+
+This is a familiar procedure in accordance with how exploit kits detect web-browser plugins to analyze vulnerabilities. 
+
+The information provided by SMBTouch is used to serve a suitable exploit.
+*/
