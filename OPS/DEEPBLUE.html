@@ -1,0 +1,1191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <title>DEEPBLUE</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <meta name="description" content="DEEPBLUE v. 49.2"/>
+
+    <meta name="author" content="CAIMEO"/>
+
+    <meta name="keywords" content="DEEPBLUE"/>
+
+    <style type="text/css">
+
+        /*<![CDATA[*/
+
+        @font-face {
+            font-family: 'VCR OSD Mono';
+            src: url('../VCR_OSD_MONO_1.001.ttf');
+        }
+
+        body {
+            font-family: 'VCR OSD Mono';
+            background-color: #000000;
+            color: #ffffff;
+            font-size: 1.5em;
+        }
+
+        h1 {
+            border: 2px #009900 solid;
+            color: #009900;
+        }
+
+        table {
+            font-size: 1em;
+            width: 85%;
+        }
+
+
+        fieldset {
+            font-family: 'VCR OSD Mono';
+            font-size: 1em;
+            border: 2px solid #00ff00;
+            display: inline-block;
+        }
+
+        /*]]>*/
+
+    </style>
+
+    <script type="text/javascript">
+
+    //<![CDATA[
+
+    var EASYBEE = {}; // Easybee-1.0.1.0.xml
+    var EASYPI = {}; // Easypi-3.1.0.0.xml
+    var ECLIPSEDWING = {}; // Eclipsedwing-1.5.2.0.xml
+    var EDUCATEDSCHOLAR = {}; // Educatedscholar-1.0.0.0.xml
+    var EMERALDTHREAD = {}; // Emeraldthread-3.0.0.0.xml
+    var EMPHASISMINE = {}; // Emphasismine-3.4.0.0.xml
+    var ENGLISHMANSDENTIST = {}; // Englishmansdentist-1.2.0.0.xml
+    var ERRATICGOPHER = {}; // Erraticgopher-1.0.1.0.xml
+    var ESKIMOROLL = {}; // Eskimoroll-1.1.1.0.xml
+    var ESTEEMAUDIT = {}; // Esteemaudit-2.1.0.0.xml
+
+
+    var ETERNALBLUE = {
+	"config": {
+		"inputparameters": {
+			"parameter": [
+				{
+					"default": "0",
+					"_hidden": "true",
+					"_type": "TcpPort",
+					"_name": "DaveProxyPort",
+					"_description": "DAVE Core/Proxy Hookup connection port"
+				},
+				{
+					"default": "60",
+					"_type": "S16",
+					"_name": "NetworkTimeout",
+					"_description": "Timeout for blocking network calls (in seconds). Use -1 for no timeout."
+				},
+				{
+					"_xdevmap": "TARGET_IP_V4_ADDRESS",
+					"_type": "IPv4",
+					"_name": "TargetIp",
+					"_description": "Target IP Address"
+				},
+				{
+					"default": "445",
+					"_xdevmap": "TARGET_PORT",
+					"_type": "TcpPort",
+					"_name": "TargetPort",
+					"_description": "Port used by the SMB service for exploit connection"
+				},
+				{
+					"default": "true",
+					"_xdevmap": "ETERNALBLUE_VALIDATE_TARGET",
+					"_type": "Boolean",
+					"_name": "VerifyTarget",
+					"_description": "Validate the SMB string from target against the target selected before exploitation."
+				},
+				{
+					"default": "true",
+					"_xdevmap": "ETERNALBLUE_VALIDATE_BACKDOOR",
+					"_type": "Boolean",
+					"_name": "VerifyBackdoor",
+					"_description": "Validate the presence of the DOUBLE PULSAR backdoor before throwing. This option must be enabled for multiple exploit attempts."
+				},
+				{
+					"default": "3",
+					"_xdevmap": "ETERNALBLUE_MAX_EXPLOIT_ATTEMPTS",
+					"_type": "U32",
+					"_name": "MaxExploitAttempts",
+					"_description": "Number of times to attempt the exploit and groom. Disabled for XP/2K3."
+				},
+				{
+					"default": "12",
+					"_xdevmap": "ETERNALBLUE_NUMBER_SPRAY_ALLOCATIONS",
+					"_type": "U32",
+					"_name": "GroomAllocations",
+					"_description": "Number of large SMBv2 buffers (Vista+) or SessionSetup allocations (XK/2K3) to do."
+				},
+				{
+					"_name": "ShellcodeBuffer",
+					"_required": "false",
+					"_xdevmap": "EXPLOIT_SHELLCODE",
+					"_hidden": "true",
+					"_type": "Buffer",
+					"_description": "Shellcode buffer in hex (hint: use 'F:<FILENAME>' to load from file)"
+				}
+			],
+			"paramchoice": {
+				"value": "WIN72K8R2",
+				"paramgroup": [
+					{
+						"_name": "XP",
+						"_description": "Windows XP 32-Bit All Service Packs"
+					},
+					{
+						"_name": "WIN72K8R2",
+						"_description": "Windows 7 and 2008 R2 32-Bit and 64-Bit All Service Packs"
+					}
+				],
+				"_xdevmap": "TARGET_PLATFORM",
+				"_name": "Target",
+				"_description": "Operating System, Service Pack, and Architecture of target OS"
+			}
+		},
+		"outputparameters": {
+			"parameter": {
+				"_xdevmap": "ETERNALBLUE_DOUBLEPULSAR_PRESENT",
+				"_type": "Boolean",
+				"_name": "DoublePulsarPresent",
+				"_description": "Set to true if the DOUBLEPULSAR backdoor was already installed and the exploit did not have to be thrown"
+			}
+		},
+		"redirection": {
+			"local": {
+				"_protocol": "TCP",
+				"_listenaddr": "TargetIp",
+				"_listenport": "TargetPort",
+				"_closeoncompletion": "true",
+				"_destaddr": "//identifier",
+				"_destport": "//service[name='SMB']/port"
+			}
+		},
+		"logic": {
+			"and": {
+				"service": {
+					"bindtovalue": {
+						"_name": "Protocol",
+						"_value": "SMB"
+					},
+					"bindtopath": {
+						"_path": "//service[name='smb']/port",
+						"_name": "TargetPort"
+					},
+					"_name": "smb"
+				},
+				"or": {
+					"os": [
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "XP"
+							},
+							"_name": "Windows XP",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "XP"
+							},
+							"_servicepack": "0",
+							"_name": "Windows XP",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "XP"
+							},
+							"_servicepack": "1",
+							"_name": "Windows XP",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "XP"
+							},
+							"_servicepack": "2",
+							"_name": "Windows XP",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "XP"
+							},
+							"_servicepack": "3",
+							"_name": "Windows XP",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "W2K3SP0"
+							},
+							"_servicepack": "0",
+							"_name": "Windows 2003",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "W2K3SP1SP2"
+							},
+							"_servicepack": "1",
+							"_name": "Windows 2003",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "W2K3SP1SP2"
+							},
+							"_servicepack": "2",
+							"_name": "Windows 2003",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "W2K3X64"
+							},
+							"_servicepack": "1",
+							"_name": "Windows 2003",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "W2K3X64"
+							},
+							"_servicepack": "2",
+							"_name": "Windows 2003",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "VISTA2K8X86"
+							},
+							"_servicepack": "0",
+							"_name": "Windows Vista",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "VISTA2K8X86"
+							},
+							"_servicepack": "1",
+							"_name": "Windows Vista",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "VISTA2K8X86"
+							},
+							"_servicepack": "2",
+							"_name": "Windows Vista",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "VISTA2K8X64"
+							},
+							"_servicepack": "0",
+							"_name": "Windows Vista",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "VISTA2K8X64"
+							},
+							"_servicepack": "1",
+							"_name": "Windows Vista",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "VISTA2K8X64"
+							},
+							"_servicepack": "2",
+							"_name": "Windows Vista",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "VISTA2K8X86"
+							},
+							"_servicepack": "0",
+							"_name": "Windows 2008",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "VISTA2K8X86"
+							},
+							"_servicepack": "1",
+							"_name": "Windows 2008",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "VISTA2K8X86"
+							},
+							"_servicepack": "2",
+							"_name": "Windows 2008",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "VISTA2K8X64"
+							},
+							"_servicepack": "0",
+							"_name": "Windows 2008",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "VISTA2K8X64"
+							},
+							"_servicepack": "1",
+							"_name": "Windows 2008",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "VISTA2K8X64"
+							},
+							"_servicepack": "2",
+							"_name": "Windows 2008",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WIN72K8R2"
+							},
+							"_servicepack": "0",
+							"_name": "Windows 2008 R2",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WIN72K8R2"
+							},
+							"_servicepack": "1",
+							"_name": "Windows 2008 R2",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WIN72K8R2"
+							},
+							"_servicepack": "0",
+							"_name": "Windows 7",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WIN72K8R2"
+							},
+							"_servicepack": "1",
+							"_name": "Windows 7",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WIN72K8R2"
+							},
+							"_servicepack": "0",
+							"_name": "Windows 7",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WIN72K8R2"
+							},
+							"_servicepack": "1",
+							"_name": "Windows 7",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						}
+					]
+				}
+			}
+		},
+		"_xmlns": "urn:trch",
+		"_name": "Eternalblue",
+		"_version": "2.2.0",
+		"_schemaversion": "2.1.0",
+		"_configversion": "2.2.0.0",
+		"_id": "0f38f55b6a88feccfb846d3d10ab4687e652e63e"
+	}
+};
+
+var ETERNALCHAMPION = {
+	"config": {
+		"inputparameters": {
+			"parameter": [
+				{
+					"default": "60",
+					"_type": "S16",
+					"_name": "NetworkTimeout",
+					"_description": "Timeout for blocking network calls (in seconds).  Use -1 for no timeout."
+				},
+				{
+					"_type": "IPv4",
+					"_name": "TargetIp",
+					"_description": "The actual (non-redirected) Target IP Address"
+				},
+				{
+					"default": "445",
+					"_type": "TcpPort",
+					"_name": "TargetPort",
+					"_description": "The actual (non-redirected) Target TCP port"
+				},
+				{
+					"_hidden": "true",
+					"_required": "false",
+					"_type": "IPv4",
+					"_name": "RedirectedTargetIp",
+					"_description": "The physical (redirected) target IP address"
+				},
+				{
+					"_hidden": "true",
+					"_required": "false",
+					"_type": "TcpPort",
+					"_name": "RedirectedTargetPort",
+					"_description": "The physical (redirected) target TCP port"
+				},
+				{
+					"default": "0",
+					"_hidden": "true",
+					"_type": "TcpPort",
+					"_name": "DaveProxyPort",
+					"_description": "DAVE Core/Proxy Hookup connection port"
+				},
+				{
+					"default": "42",
+					"_hidden": "true",
+					"_type": "U32",
+					"_name": "MaxExploitAttempts",
+					"_description": "Number of tries to exploit. Default 42"
+				},
+				{
+					"default": "",
+					"_type": "String",
+					"_name": "PipeName",
+					"_description": "The named pipe to use (Win7+ only, need Pipe or Share)"
+				},
+				{
+					"default": "",
+					"_type": "Buffer",
+					"_name": "ShareName",
+					"_description": "The name of the share to use in Unicode (Win7+ only, need Pipe or Share)"
+				},
+				{
+					"_xdevmap": "EXPLOIT_SHELLCODE",
+					"_type": "Buffer",
+					"_name": "ShellcodeBuffer",
+					"_description": "DOPU Shellcode buffer"
+				}
+			],
+			"paramchoice": [
+				{
+					"default": "Anonymous",
+					"paramgroup": [
+						{
+							"_name": "Anonymous",
+							"_description": "Anonymous (NULL session)"
+						},
+						{
+							"_name": "Guest",
+							"_description": "Guest account"
+						},
+						{
+							"parameter": {
+								"_type": "Buffer",
+								"_name": "Username",
+								"_description": "Username entered as hex bytes (in unicode)"
+							},
+							"_name": "Blank",
+							"_description": "User account with no password set"
+						},
+						{
+							"parameter": [
+								{
+									"_type": "Buffer",
+									"_name": "Username",
+									"_description": "Username entered as hex bytes (in unicode)"
+								},
+								{
+									"_type": "Buffer",
+									"_name": "Password",
+									"_description": "Password entered as hex bytes (in unicode)"
+								}
+							],
+							"_name": "Password",
+							"_description": "User name and password"
+						},
+						{
+							"parameter": [
+								{
+									"_type": "Buffer",
+									"_name": "Username",
+									"_description": "Username entered as hex bytes (in unicode)"
+								},
+								{
+									"_type": "Buffer",
+									"_name": "NtlmHash",
+									"_description": "NTLM password hash (in hex)"
+								}
+							],
+							"_name": "NTLM",
+							"_description": "User name and NTLM hash"
+						}
+					],
+					"_name": "Credentials",
+					"_description": "Type of credentials to use"
+				},
+				{
+					"default": "SMB",
+					"paramgroup": [
+						{
+							"_name": "SMB",
+							"_description": "SMB protocol"
+						},
+						{
+							"_name": "NBT",
+							"_description": "Netbios protocol"
+						}
+					],
+					"_name": "Protocol",
+					"_description": "SMB (default port 445) or NBT (default port 139)"
+				},
+				{
+					"paramgroup": [
+						{
+							"_name": "XP_SP0SP1_X86",
+							"_description": "Windows XP Sp0 and Sp1, 32-bit"
+						},
+						{
+							"_name": "XP_SP2SP3_X86",
+							"_description": "Windows XP Sp2 and Sp3, 32-bit"
+						},
+						{
+							"_name": "XP_SP1_X64",
+							"_description": "Windows XP Sp1, 64-bit"
+						},
+						{
+							"_name": "XP_SP2_X64",
+							"_description": "Windows XP Sp2, 64-bit"
+						},
+						{
+							"_name": "SERVER_2003_SP0",
+							"_description": "Windows Sever 2003 Sp0, 32-bit"
+						},
+						{
+							"_name": "SERVER_2003_SP1",
+							"_description": "Windows Sever 2003 Sp1, 32-bit/64-bit"
+						},
+						{
+							"_name": "SERVER_2003_SP2",
+							"_description": "Windows Sever 2003 Sp2, 32-bit/64-bit"
+						},
+						{
+							"_name": "VISTA_SP0",
+							"_description": "Windows Vista Sp0, 32-bit/64-bit"
+						},
+						{
+							"_name": "VISTA_SP1",
+							"_description": "Windows Vista Sp1, 32-bit/64-bit"
+						},
+						{
+							"_name": "VISTA_SP2",
+							"_description": "Windows Vista Sp2, 32-bit/64-bit"
+						},
+						{
+							"_name": "SERVER_2008_SP0",
+							"_description": "Windows Server 2008 Sp0, 32-bit/64-bit"
+						},
+						{
+							"_name": "SERVER_2008_SP1",
+							"_description": "Windows Server 2008 Sp1, 32-bit/64-bit"
+						},
+						{
+							"_name": "SERVER_2008_SP2",
+							"_description": "Windows Server 2008 Sp2, 32-bit/64-bit"
+						},
+						{
+							"_name": "WIN7_SP0",
+							"_description": "Windows 7 Sp0, 32-bit/64-bit"
+						},
+						{
+							"_name": "WIN7_SP1",
+							"_description": "Windows 7 Sp1, 32-bit/64-bit"
+						},
+						{
+							"_name": "SERVER_2008R2_SP0",
+							"_description": "Windows Server 2008 R2 Sp0, 32-bit/64-bit"
+						},
+						{
+							"_name": "SERVER_2008R2_SP1",
+							"_description": "Windows Server 2008 R2 Sp1, 32-bit/64-bit"
+						},
+						{
+							"_name": "WIN8_SP0",
+							"_description": "Windows 8 Sp0, 32-bit/64-bit"
+						}
+					],
+					"_name": "Target",
+					"_description": "Operating System, Service Pack, of target OS"
+				},
+				{
+					"default": "Unknown",
+					"paramgroup": [
+						{
+							"_name": "Unknown",
+							"_description": "The architecture is not known (exploit will figure it out)"
+						},
+						{
+							"_name": "x86",
+							"_description": "The target is 32-bit"
+						},
+						{
+							"_name": "x64",
+							"_description": "The target is 64-bit"
+						}
+					],
+					"_name": "TargetOsArchitecture",
+					"_description": "The architecture of the target operating system"
+				}
+			]
+		},
+		"constants": {
+			"parameter": [
+				{
+					"value": "0x05010000",
+					"_type": "U32",
+					"_name": "XP_SP0SP1_X86",
+					"_description": ""
+				},
+				{
+					"value": "0x05010200",
+					"_type": "U32",
+					"_name": "XP_SP2SP3_X86",
+					"_description": ""
+				},
+				{
+					"value": "0x05020101",
+					"_type": "U32",
+					"_name": "XP_SP1_X64",
+					"_description": ""
+				},
+				{
+					"value": "0x05020201",
+					"_type": "U32",
+					"_name": "XP_SP2_X64",
+					"_description": ""
+				},
+				{
+					"value": "0x85020002",
+					"_type": "U32",
+					"_name": "SERVER_2003_SP0",
+					"_description": ""
+				},
+				{
+					"value": "0x85020102",
+					"_type": "U32",
+					"_name": "SERVER_2003_SP1",
+					"_description": ""
+				},
+				{
+					"value": "0x85020202",
+					"_type": "U32",
+					"_name": "SERVER_2003_SP2",
+					"_description": ""
+				},
+				{
+					"value": "0x06000002",
+					"_type": "U32",
+					"_name": "VISTA_SP0",
+					"_description": ""
+				},
+				{
+					"value": "0x06000102",
+					"_type": "U32",
+					"_name": "VISTA_SP1",
+					"_description": ""
+				},
+				{
+					"value": "0x06000202",
+					"_type": "U32",
+					"_name": "VISTA_SP2",
+					"_description": ""
+				},
+				{
+					"value": "0x86000002",
+					"_type": "U32",
+					"_name": "SERVER_2008_SP0",
+					"_description": ""
+				},
+				{
+					"value": "0x86000102",
+					"_type": "U32",
+					"_name": "SERVER_2008_SP1",
+					"_description": ""
+				},
+				{
+					"value": "0x86000202",
+					"_type": "U32",
+					"_name": "SERVER_2008_SP2",
+					"_description": ""
+				},
+				{
+					"value": "0x06010002",
+					"_type": "U32",
+					"_name": "WIN7_SP0",
+					"_description": ""
+				},
+				{
+					"value": "0x06010102",
+					"_type": "U32",
+					"_name": "WIN7_SP1",
+					"_description": ""
+				},
+				{
+					"value": "0x86010002",
+					"_type": "U32",
+					"_name": "SERVER_2008R2_SP0",
+					"_description": ""
+				},
+				{
+					"value": "0x86010102",
+					"_type": "U32",
+					"_name": "SERVER_2008R2_SP1",
+					"_description": ""
+				},
+				{
+					"value": "0x06020002",
+					"_type": "U32",
+					"_name": "WIN8_SP0",
+					"_description": ""
+				},
+				{
+					"value": "0x86020002",
+					"_type": "U32",
+					"_name": "SERVER_2K12_SP0",
+					"_description": ""
+				},
+				{
+					"value": "0",
+					"_type": "U8",
+					"_name": "x86",
+					"_description": "32-bit Architecture"
+				},
+				{
+					"value": "1",
+					"_type": "U8",
+					"_name": "x64",
+					"_description": "64-bit Architecture"
+				},
+				{
+					"value": "2",
+					"_type": "U8",
+					"_name": "Unknown",
+					"_description": "Unknown Architecture"
+				},
+				{
+					"value": "0",
+					"_type": "U8",
+					"_name": "Anonymous",
+					"_description": ""
+				},
+				{
+					"value": "1",
+					"_type": "U8",
+					"_name": "Guest",
+					"_description": ""
+				},
+				{
+					"value": "2",
+					"_type": "U8",
+					"_name": "Blank",
+					"_description": ""
+				},
+				{
+					"value": "3",
+					"_type": "U8",
+					"_name": "Password",
+					"_description": ""
+				},
+				{
+					"value": "4",
+					"_type": "U8",
+					"_name": "NTLM",
+					"_description": ""
+				}
+			]
+		},
+		"errors": {
+			"errorcode": [
+				{
+					"_name": "ETCH_RESULT_NETWORK_ERROR",
+					"_value": "65",
+					"_description": "A network error occured"
+				},
+				{
+					"_name": "ETCH_RESULT_NOTSUPPORTED",
+					"_value": "66",
+					"_description": "Feature is not yet supported"
+				},
+				{
+					"_name": "ETCH_RESULT_UNKNOWN_ARCHITECTURE",
+					"_value": "67",
+					"_description": "Architecture was not discovered"
+				},
+				{
+					"_name": "ETCH_RESULT_TRANS_NOT_FOUND",
+					"_value": "69",
+					"_description": "Transaction not leaked"
+				},
+				{
+					"_name": "ETCH_RESULT_UNSUCCESSFUL",
+					"_value": "71",
+					"_description": "Attempts were unsuccessful"
+				},
+				{
+					"_name": "ETCH_RESULT_PARAM_ERROR",
+					"_value": "73",
+					"_description": "A parameter is invalid"
+				},
+				{
+					"_name": "ETCH_RESULT_NOT_VULNERABLE",
+					"_value": "74",
+					"_description": "Target is not vulnerable with these parameters"
+				}
+			]
+		},
+		"redirection": {
+			"local": {
+				"_protocol": "TCP",
+				"_listenaddr": "RedirectedTargetIp",
+				"_listenport": "RedirectedTargetPort",
+				"_closeoncompletion": "true",
+				"_destaddr": "TargetIp",
+				"_destport": "TargetPort"
+			}
+		},
+		"logic": {
+			"and": {
+				"service": {
+					"bindtovalue": {
+						"_name": "Protocol",
+						"_value": "SMB"
+					},
+					"bindtopath": {
+						"_path": "//service[name='smb']/port",
+						"_name": "TargetPort"
+					},
+					"_name": "smb"
+				},
+				"or": {
+					"os": [
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "XP"
+							},
+							"_name": "Windows XP",
+							"_family": "windows"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "W2K3SP0"
+							},
+							"_servicepack": "0",
+							"_name": "Windows 2003",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "W2K3SP1"
+							},
+							"_servicepack": "1",
+							"_name": "Windows 2003",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "W2K3SP2"
+							},
+							"_servicepack": "2",
+							"_name": "Windows 2003",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "W2K3XPX64SP1"
+							},
+							"_servicepack": "1",
+							"_name": "Windows XP",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "W2K3XPX64SP2"
+							},
+							"_servicepack": "2",
+							"_name": "Windows XP",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "W2K3XPX64SP1"
+							},
+							"_servicepack": "1",
+							"_name": "Windows 2003",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "W2K3XPX64SP2"
+							},
+							"_servicepack": "2",
+							"_name": "Windows 2003",
+							"_family": "windows",
+							"_architecture": "x64 64-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WVISTA_2008_7"
+							},
+							"_servicepack": "0",
+							"_name": "Windows Vista",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WVISTA_2008_7"
+							},
+							"_servicepack": "1",
+							"_name": "Windows Vista",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WVISTA_2008_7"
+							},
+							"_servicepack": "2",
+							"_name": "Windows Vista",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WVISTA_2008_7"
+							},
+							"_servicepack": "0",
+							"_name": "Windows 2008",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WVISTA_2008_7"
+							},
+							"_servicepack": "1",
+							"_name": "Windows 2008",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WVISTA_2008_7"
+							},
+							"_servicepack": "2",
+							"_name": "Windows 2008",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WVISTA_2008_7"
+							},
+							"_servicepack": "0",
+							"_name": "Windows 2008 R2",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						},
+						{
+							"bindtovalue": {
+								"_name": "Target",
+								"_value": "WVISTA_2008_7"
+							},
+							"_servicepack": "0",
+							"_name": "Windows 7",
+							"_family": "windows",
+							"_architecture": "x86 32-bit"
+						}
+					]
+				}
+			}
+		},
+		"_xmlns": "urn:trch",
+		"_name": "Eternalchampion",
+		"_version": "2.0.0",
+		"_schemaversion": "2.1.0",
+		"_configversion": "2.0.0.0",
+		"_id": "a2b184ef911a684c559fa2e9b9fa30ee868dfc70"
+	}
+};
+    var  ETERNALROCKS= {}; // ?
+    var  ETERNALROMANCE= {}; // Eternalromance-1.4.0.0.xml
+    var  ETERNALSYNERGY = {}; // Eternalsynergy-1.0.1.0.xml
+    var  EWOKFRENZY = {}; // Ewokfrenzy-2.0.0.0.xml
+    var  EXPLODINGCAN = {}; // Explodingcan-2.0.2.0.xml
+    var  ZIPPYBEER = {}; // Zippybeer-1.0.2.0.xml
+
+//]]>
+</script>
+</head>
+<body>
+
+<h1>EASYBEE:</h1>
+<fieldset><p id="easybee"></p></fieldset>
+<h1>EASYPI:</h1>
+<fieldset><p id="easypi"></p></fieldset>
+<h1>ECLIPSEDWING:</h1>
+<fieldset><p id="eclipsedwing"></p></fieldset>
+<h1>EDUCATEDSCHOLAR:</h1>
+<fieldset><p id="educatedscholar"></p></fieldset>
+<h1>EMERALDTHREAD:</h1>
+<fieldset><p id="emeraldthread"></p></fieldset>
+<h1>EMPHASISMINE:</h1>
+<fieldset><p id="emphasismine"></p></fieldset>
+<h1>ENGLISHMANSDENTIST:</h1>
+<fieldset><p id="englishmansdentist"></p></fieldset>
+<h1>ERRATICGOPHER:</h1>
+<fieldset><p id="erraticgopher"></p></fieldset>
+<h1>ESKIMOROLL:</h1>
+<fieldset><p id="eskimoroll"></p></fieldset>
+<h1>ESTEEMAUDIT:</h1>
+<fieldset><p id="esteemaudit"></p></fieldset>
+<h1>ETERNALBLUE:</h1>
+<fieldset><p id="eternalblue"></p></fieldset>
+<h1>ETERNALCHAMPION:</h1>
+<fieldset><p id="eternalchampion"></p></fieldset>
+<h1>ETERNALROCKS:</h1>
+<fieldset><p id="eternalrocks"></p></fieldset>
+<h1>ETERNALROMANCE:</h1>
+<fieldset><p id="eternalromance"></p></fieldset>
+<h1>ETERNALSYNERGY:</h1>
+<fieldset><p id="eternalsynergy"></p></fieldset>
+<h1>EWOKFRENZY:</h1>
+<fieldset><p id="ewokfrenzy"></p></fieldset>
+<h1>EXPLODINGCAN:</h1>
+<fieldset><p id="explodingcan"></p></fieldset>
+<h1>ZIPPYBEER:</h1>
+<fieldset><p id="zippybeer"></p></fieldset>
+
+
+
+<script type="text/javascript">
+    easybee.innerHTML += JSON.stringify(EASYBEE, null,"<br/>");
+    easypi.innerHTML += JSON.stringify(EASYPI, null,"<br/>");
+    eclipsedwing.innerHTML += JSON.stringify(ECLIPSEDWING, null,"<br/>");
+    educatedscholar.innerHTML += JSON.stringify(EDUCATEDSCHOLAR, null,"<br/>");
+    emeraldthread.innerHTML += JSON.stringify(EMERALDTHREAD, null,"<br/>");
+    emphasismine.innerHTML += JSON.stringify(EMPHASISMINE, null,"<br/>");
+    englishmansdentist.innerHTML += JSON.stringify(ENGLISHMANSDENTIST, null,"<br/>");
+    erraticgopher.innerHTML += JSON.stringify(ERRATICGOPHER, null,"<br/>");
+    eskimoroll.innerHTML += JSON.stringify(ESKIMOROLL, null,"<br/>");
+    esteemaudit.innerHTML += JSON.stringify(ESTEEMAUDIT, null,"<br/>");
+    eternalblue.innerHTML += JSON.stringify(ETERNALBLUE, null,"<br/>");
+    eternalchampion.innerHTML += JSON.stringify(ETERNALCHAMPION, null,"<br/>");
+    eternalrocks.innerHTML += JSON.stringify(ETERNALROCKS, null,"<br/>");
+    eternalromance.innerHTML += JSON.stringify(ETERNALROMANCE, null,"<br/>");
+    eternalsynergy.innerHTML += JSON.stringify(ETERNALSYNERGY, null,"<br/>");
+    ewokfrenzy.innerHTML += JSON.stringify(EWOKFRENZY, null,"<br/>");
+    explodingcan.innerHTML += JSON.stringify(EXPLODINGCAN, null,"<br/>");
+    zippybeer.innerHTML += JSON.stringify(ZIPPYBEER, null,"<br/>");
+</script>
+
+</body>
+</html>
